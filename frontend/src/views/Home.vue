@@ -523,7 +523,20 @@ export default {
     radial-gradient(ellipse at 30% 40%, rgba(255, 255, 255, 0.3) 0%, transparent 50%),
     radial-gradient(ellipse at 70% 60%, rgba(0, 0, 0, 0.15) 0%, transparent 50%),
     linear-gradient(135deg, #f4c88a 0%, #d4a574 30%, #c49460 70%, #b8864a 100%);
-  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  border-radius: 50% 50% 50% 50% / 60% 60% 50% 50%;
+  clip-path: polygon(
+    0% 0%,
+    100% 0%,
+    100% 85%,
+    95% 90%,
+    85% 92%,
+    75% 95%,
+    50% 100%,
+    25% 95%,
+    15% 92%,
+    5% 90%,
+    0% 85%
+  );
   position: relative;
   box-shadow: 
     0 3px 8px rgba(0, 0, 0, 0.3),
@@ -931,7 +944,20 @@ export default {
     radial-gradient(ellipse at 30% 40%, rgba(255, 255, 255, 0.4) 0%, transparent 50%),
     radial-gradient(ellipse at 70% 60%, rgba(0, 0, 0, 0.2) 0%, transparent 50%),
     linear-gradient(135deg, #f4c88a 0%, #d4a574 30%, #c49460 70%, #b8864a 100%);
-  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  border-radius: 50% 50% 50% 50% / 60% 60% 50% 50%;
+  clip-path: polygon(
+    0% 0%,
+    100% 0%,
+    100% 85%,
+    95% 90%,
+    85% 92%,
+    75% 95%,
+    50% 100%,
+    25% 95%,
+    15% 92%,
+    5% 90%,
+    0% 85%
+  );
   position: relative;
   box-shadow: 
     0 0 20px rgba(255, 170, 0, 0.6),
@@ -1082,7 +1108,20 @@ export default {
     radial-gradient(ellipse at 30% 40%, rgba(255, 255, 255, 0.35) 0%, transparent 50%),
     radial-gradient(ellipse at 70% 60%, rgba(0, 0, 0, 0.18) 0%, transparent 50%),
     linear-gradient(135deg, #f4c88a 0%, #d4a574 30%, #c49460 70%, #b8864a 100%);
-  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  border-radius: 50% 50% 50% 50% / 60% 60% 50% 50%;
+  clip-path: polygon(
+    0% 0%,
+    100% 0%,
+    100% 85%,
+    95% 90%,
+    85% 92%,
+    75% 95%,
+    50% 100%,
+    25% 95%,
+    15% 92%,
+    5% 90%,
+    0% 85%
+  );
   position: relative;
   box-shadow: 
     0 5px 15px rgba(0, 0, 0, 0.3),
