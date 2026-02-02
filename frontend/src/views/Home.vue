@@ -520,27 +520,32 @@ export default {
   width: 100%;
   height: 100%;
   background: 
-    radial-gradient(ellipse at 30% 40%, rgba(255, 255, 255, 0.3) 0%, transparent 50%),
-    radial-gradient(ellipse at 70% 60%, rgba(0, 0, 0, 0.15) 0%, transparent 50%),
+    /* 중앙 압착 부분의 어두운 그림자 (U자 구조) */
+    radial-gradient(ellipse at 50% 75%, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0.15) 15%, transparent 30%),
+    /* 반 접힌 부분의 하이라이트 */
+    radial-gradient(ellipse at 50% 45%, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.2) 20%, transparent 40%),
+    /* 좌우 측면 명암 */
+    linear-gradient(90deg, 
+      rgba(0, 0, 0, 0.1) 0%,
+      transparent 15%,
+      transparent 85%,
+      rgba(0, 0, 0, 0.1) 100%
+    ),
+    /* 기본 색상 그라데이션 */
     linear-gradient(135deg, #f4c88a 0%, #d4a574 30%, #c49460 70%, #b8864a 100%);
-  border-radius: 50% 50% 50% 50% / 60% 60% 50% 50%;
-  clip-path: polygon(
-    0% 0%,
-    100% 0%,
-    100% 85%,
-    95% 90%,
-    85% 92%,
-    75% 95%,
-    50% 100%,
-    25% 95%,
-    15% 92%,
-    5% 90%,
-    0% 85%
-  );
+  /* 얇은 원형 → 반 접힘 형태 */
+  border-radius: 50% 50% 50% 50% / 45% 45% 55% 55%;
+  /* 중앙 압착된 U자 구조 */
+  clip-path: ellipse(50% 45% at 50% 50%);
   position: relative;
   box-shadow: 
+    /* 외부 그림자 */
     0 3px 8px rgba(0, 0, 0, 0.3),
-    inset 0 2px 4px rgba(255, 255, 255, 0.3),
+    /* 위쪽 반 접힌 부분의 하이라이트 */
+    inset 0 3px 6px rgba(255, 255, 255, 0.4),
+    /* 중앙 압착 부분의 그림자 (U자 구조) */
+    inset 0 8px 20px rgba(0, 0, 0, 0.3),
+    /* 아래쪽 반 접힌 부분의 그림자 */
     inset 0 -2px 4px rgba(0, 0, 0, 0.2);
   overflow: hidden;
 }
@@ -548,38 +553,45 @@ export default {
 .cookie-fallback::before {
   content: '';
   position: absolute;
-  top: 45%;
-  left: 20%;
-  width: 60%;
-  height: 3px;
+  top: 70%;
+  left: 25%;
+  width: 50%;
+  height: 8px;
+  /* 중앙 압착된 부분의 깊은 주름 (U자 구조) */
   background: linear-gradient(to right, 
     transparent 0%,
-    rgba(0, 0, 0, 0.2) 20%,
-    rgba(0, 0, 0, 0.3) 50%,
-    rgba(0, 0, 0, 0.2) 80%,
+    rgba(0, 0, 0, 0.3) 15%,
+    rgba(0, 0, 0, 0.4) 30%,
+    rgba(0, 0, 0, 0.5) 50%,
+    rgba(0, 0, 0, 0.4) 70%,
+    rgba(0, 0, 0, 0.3) 85%,
     transparent 100%
   );
-  border-radius: 2px;
+  border-radius: 0 0 50% 50%;
   transform: translateY(-50%);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  box-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.2),
+    inset 0 2px 3px rgba(0, 0, 0, 0.3);
 }
 
 .cookie-fallback::after {
   content: '';
   position: absolute;
-  top: 50%;
-  left: 15%;
-  width: 70%;
+  top: 45%;
+  left: 20%;
+  width: 60%;
   height: 2px;
+  /* 반 접힌 부분의 하이라이트 */
   background: linear-gradient(to right, 
     transparent 0%,
-    rgba(255, 255, 255, 0.4) 20%,
-    rgba(255, 255, 255, 0.5) 50%,
-    rgba(255, 255, 255, 0.4) 80%,
+    rgba(255, 255, 255, 0.5) 20%,
+    rgba(255, 255, 255, 0.6) 50%,
+    rgba(255, 255, 255, 0.5) 80%,
     transparent 100%
   );
   border-radius: 1px;
   transform: translateY(-50%);
+  box-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
 }
 
 .header-title {
@@ -941,28 +953,35 @@ export default {
   width: 100%;
   height: 100%;
   background: 
-    radial-gradient(ellipse at 30% 40%, rgba(255, 255, 255, 0.4) 0%, transparent 50%),
-    radial-gradient(ellipse at 70% 60%, rgba(0, 0, 0, 0.2) 0%, transparent 50%),
+    /* 중앙 압착 부분의 어두운 그림자 (U자 구조) */
+    radial-gradient(ellipse at 50% 75%, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.2) 15%, transparent 30%),
+    /* 반 접힌 부분의 하이라이트 */
+    radial-gradient(ellipse at 50% 45%, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.3) 20%, transparent 40%),
+    /* 좌우 측면 명암 */
+    linear-gradient(90deg, 
+      rgba(0, 0, 0, 0.12) 0%,
+      transparent 15%,
+      transparent 85%,
+      rgba(0, 0, 0, 0.12) 100%
+    ),
+    /* 기본 색상 그라데이션 */
     linear-gradient(135deg, #f4c88a 0%, #d4a574 30%, #c49460 70%, #b8864a 100%);
-  border-radius: 50% 50% 50% 50% / 60% 60% 50% 50%;
-  clip-path: polygon(
-    0% 0%,
-    100% 0%,
-    100% 85%,
-    95% 90%,
-    85% 92%,
-    75% 95%,
-    50% 100%,
-    25% 95%,
-    15% 92%,
-    5% 90%,
-    0% 85%
-  );
+  /* 얇은 원형 → 반 접힘 형태 */
+  border-radius: 50% 50% 50% 50% / 45% 45% 55% 55%;
+  /* 중앙 압착된 U자 구조 */
+  clip-path: ellipse(50% 45% at 50% 50%);
   position: relative;
   box-shadow: 
+    /* 오븐 빛 효과 */
     0 0 20px rgba(255, 170, 0, 0.6),
     0 0 40px rgba(255, 107, 0, 0.4),
-    inset 0 2px 4px rgba(255, 255, 255, 0.3),
+    /* 외부 그림자 */
+    0 3px 8px rgba(0, 0, 0, 0.3),
+    /* 위쪽 반 접힌 부분의 하이라이트 */
+    inset 0 3px 6px rgba(255, 255, 255, 0.4),
+    /* 중앙 압착 부분의 그림자 (U자 구조) */
+    inset 0 8px 20px rgba(0, 0, 0, 0.3),
+    /* 아래쪽 반 접힌 부분의 그림자 */
     inset 0 -2px 4px rgba(0, 0, 0, 0.2);
   animation: bakingRotate 1.2s infinite;
   overflow: hidden;
@@ -971,20 +990,25 @@ export default {
 .cookie-baking-fallback::before {
   content: '';
   position: absolute;
-  top: 45%;
-  left: 20%;
-  width: 60%;
-  height: 4px;
+  top: 70%;
+  left: 25%;
+  width: 50%;
+  height: 10px;
+  /* 중앙 압착된 부분의 깊은 주름 (U자 구조) */
   background: linear-gradient(to right, 
     transparent 0%,
-    rgba(0, 0, 0, 0.25) 20%,
-    rgba(0, 0, 0, 0.35) 50%,
-    rgba(0, 0, 0, 0.25) 80%,
+    rgba(0, 0, 0, 0.35) 15%,
+    rgba(0, 0, 0, 0.45) 30%,
+    rgba(0, 0, 0, 0.55) 50%,
+    rgba(0, 0, 0, 0.45) 70%,
+    rgba(0, 0, 0, 0.35) 85%,
     transparent 100%
   );
-  border-radius: 2px;
+  border-radius: 0 0 50% 50%;
   transform: translateY(-50%);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  box-shadow: 
+    0 2px 5px rgba(0, 0, 0, 0.25),
+    inset 0 2px 4px rgba(0, 0, 0, 0.35);
 }
 
 @keyframes baking {
@@ -1105,27 +1129,32 @@ export default {
   width: 100%;
   height: 100%;
   background: 
-    radial-gradient(ellipse at 30% 40%, rgba(255, 255, 255, 0.35) 0%, transparent 50%),
-    radial-gradient(ellipse at 70% 60%, rgba(0, 0, 0, 0.18) 0%, transparent 50%),
+    /* 중앙 압착 부분의 어두운 그림자 (U자 구조) */
+    radial-gradient(ellipse at 50% 75%, rgba(0, 0, 0, 0.28) 0%, rgba(0, 0, 0, 0.18) 15%, transparent 30%),
+    /* 반 접힌 부분의 하이라이트 */
+    radial-gradient(ellipse at 50% 45%, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0.25) 20%, transparent 40%),
+    /* 좌우 측면 명암 */
+    linear-gradient(90deg, 
+      rgba(0, 0, 0, 0.12) 0%,
+      transparent 15%,
+      transparent 85%,
+      rgba(0, 0, 0, 0.12) 100%
+    ),
+    /* 기본 색상 그라데이션 */
     linear-gradient(135deg, #f4c88a 0%, #d4a574 30%, #c49460 70%, #b8864a 100%);
-  border-radius: 50% 50% 50% 50% / 60% 60% 50% 50%;
-  clip-path: polygon(
-    0% 0%,
-    100% 0%,
-    100% 85%,
-    95% 90%,
-    85% 92%,
-    75% 95%,
-    50% 100%,
-    25% 95%,
-    15% 92%,
-    5% 90%,
-    0% 85%
-  );
+  /* 얇은 원형 → 반 접힘 형태 */
+  border-radius: 50% 50% 50% 50% / 45% 45% 55% 55%;
+  /* 중앙 압착된 U자 구조 */
+  clip-path: ellipse(50% 45% at 50% 50%);
   position: relative;
   box-shadow: 
+    /* 외부 그림자 */
     0 5px 15px rgba(0, 0, 0, 0.3),
-    inset 0 3px 6px rgba(255, 255, 255, 0.3),
+    /* 위쪽 반 접힌 부분의 하이라이트 */
+    inset 0 3px 6px rgba(255, 255, 255, 0.4),
+    /* 중앙 압착 부분의 그림자 (U자 구조) */
+    inset 0 8px 20px rgba(0, 0, 0, 0.35),
+    /* 아래쪽 반 접힌 부분의 그림자 */
     inset 0 -3px 6px rgba(0, 0, 0, 0.25);
   overflow: hidden;
 }
@@ -1133,38 +1162,45 @@ export default {
 .fortune-cookie-fallback::before {
   content: '';
   position: absolute;
-  top: 45%;
-  left: 20%;
-  width: 60%;
-  height: 5px;
+  top: 70%;
+  left: 25%;
+  width: 50%;
+  height: 12px;
+  /* 중앙 압착된 부분의 깊은 주름 (U자 구조) */
   background: linear-gradient(to right, 
     transparent 0%,
-    rgba(0, 0, 0, 0.25) 20%,
-    rgba(0, 0, 0, 0.4) 50%,
-    rgba(0, 0, 0, 0.25) 80%,
+    rgba(0, 0, 0, 0.35) 15%,
+    rgba(0, 0, 0, 0.45) 30%,
+    rgba(0, 0, 0, 0.55) 50%,
+    rgba(0, 0, 0, 0.45) 70%,
+    rgba(0, 0, 0, 0.35) 85%,
     transparent 100%
   );
-  border-radius: 3px;
+  border-radius: 0 0 50% 50%;
   transform: translateY(-50%);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: 
+    0 3px 6px rgba(0, 0, 0, 0.25),
+    inset 0 3px 5px rgba(0, 0, 0, 0.4);
 }
 
 .fortune-cookie-fallback::after {
   content: '';
   position: absolute;
-  top: 50%;
-  left: 15%;
-  width: 70%;
+  top: 45%;
+  left: 20%;
+  width: 60%;
   height: 3px;
+  /* 반 접힌 부분의 하이라이트 */
   background: linear-gradient(to right, 
     transparent 0%,
-    rgba(255, 255, 255, 0.5) 20%,
-    rgba(255, 255, 255, 0.6) 50%,
-    rgba(255, 255, 255, 0.5) 80%,
+    rgba(255, 255, 255, 0.55) 20%,
+    rgba(255, 255, 255, 0.65) 50%,
+    rgba(255, 255, 255, 0.55) 80%,
     transparent 100%
   );
-  border-radius: 2px;
+  border-radius: 1px;
   transform: translateY(-50%);
+  box-shadow: 0 1px 3px rgba(255, 255, 255, 0.4);
 }
 
 @keyframes shake {
