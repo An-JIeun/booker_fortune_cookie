@@ -124,12 +124,15 @@
         </div>
         <div class="fortune-paper" v-if="isOpened">
           <div class="fortune-content">
+            <div v-if="currentMessageId === 0" class="default-message-header">
+              <p class="default-header-text">첫 쿠키입니다🍀 운영자의 쿠키를 드리도록 하겠습니다🥠</p>
+            </div>
             <div class="fortune-section-item">
               <h3 class="fortune-label">설날 메시지</h3>
               <p class="fortune-text">{{ fortuneData.new_year_message }}</p>
             </div>
             <div class="fortune-section-item">
-              <h3 class="fortune-label">책 추천</h3>
+              <h3 class="fortune-label">📚추천하는 책</h3>
               <p class="fortune-text">{{ fortuneData.book_recommendation }}</p>
             </div>
           </div>
@@ -1090,6 +1093,23 @@ export default {
 
 .fortune-content {
   text-align: left;
+}
+
+.default-message-header {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, #fff8e1 0%, #ffe082 100%);
+  border-radius: 10px;
+  border: 2px solid #ffd54f;
+  text-align: center;
+}
+
+.default-header-text {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #ff8c42;
+  margin: 0;
+  line-height: 1.6;
 }
 
 .fortune-section-item {

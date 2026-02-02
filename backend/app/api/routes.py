@@ -53,7 +53,17 @@ def get_random_message(
         all_messages = query.all()
         
         if not all_messages:
-            raise HTTPException(status_code=404, detail="메시지가 없습니다.")
+            # 메시지가 없으면 운영자의 기본 메시지 반환
+            from datetime import datetime
+            default_message = FortuneMessageResponse(
+                id=0,
+                new_year_message="올해도 꿈꾸시는 일 모두 이루시길 바랍니다! 2026년도 파이팅!!💪",
+                book_recommendation="너의 유토피아(정보라) - 저주토끼로 유명한 정보라 작가의 SF 단편소설집입니다. SF 소설 좋아하신다면 읽어보시길 바라요!!",
+                is_read=False,
+                created_at=datetime.utcnow(),
+                read_at=None
+            )
+            return default_message
         selected_message = random.choice(all_messages)
     else:
         selected_message = random.choice(unread_messages)
