@@ -28,7 +28,7 @@
       <!-- 헤더 애니메이션 -->
       <h1 class="header-title" :class="{ 'show': showHeader }">
         활자중독자들 설날 이벤트<br>
-        <span class="subtitle">~독서 포춘쿠키 나누기~</span>
+        <span class="subtitle">🥠 독서 포춘쿠키 나누기 🥠</span>
       </h1>
 
       <!-- 안내 메시지 -->
@@ -53,7 +53,7 @@
       <h2 class="input-title">포춘 쿠키 만들기</h2>
       
       <div class="input-group">
-        <label class="input-label">쿠키를 열어볼 사람을 위한 설날 메시지</label>
+        <label class="input-label">🍀 쿠키를 열어볼 사람을 위한 설날 메시지</label>
         <textarea
           v-model="newYearMessage"
           placeholder="설날을 축하하는 따뜻한 메시지를 입력하세요..."
@@ -63,7 +63,7 @@
       </div>
 
       <div class="input-group">
-        <label class="input-label">멤버를 위한 책 추천</label>
+        <label class="input-label">📚 쿠키를 열어볼 사람을 위한 책 추천</label>
         <textarea
           v-model="bookRecommendation"
           placeholder="추천하고 싶은 책과 이유를 입력하세요..."
@@ -107,7 +107,7 @@
           <div class="oven-knob"></div>
         </div>
       </div>
-      <p class="baking-text">포춘 쿠키를 구우는 중...</p>
+      <p class="baking-text">🔥 포춘 쿠키를 굽는 중... 🔥</p>
     </div>
 
     <!-- 포춘 쿠키 열기 섹션 -->
@@ -123,6 +123,7 @@
           <div class="fortune-cookie-fallback" v-if="fortuneImageError"></div>
         </div>
         <div class="fortune-paper" v-if="isOpened">
+          <button class="close-btn" @click.stop="closeFortune">×</button>
           <div class="fortune-content">
             <div v-if="currentMessageId === 0" class="default-message-header">
               <p class="default-header-text">첫 쿠키입니다🍀 운영자의 쿠키를 드리도록 하겠습니다🥠</p>
@@ -138,7 +139,7 @@
           </div>
         </div>
       </div>
-      <p v-if="!isOpened" class="click-hint">포춘 쿠키를 클릭하세요!</p>
+      <p v-if="!isOpened" class="click-hint"> 🍪 포춘 쿠키를 클릭하세요! 🍪</p>
       <button @click="goHome" class="reset-btn">다시 하기</button>
     </div>
 
@@ -370,6 +371,9 @@ export default {
       } finally {
         this.loading = false
       }
+    },
+    closeFortune() {
+      this.goHome()
     }
   }
 }
@@ -1071,6 +1075,45 @@ export default {
   z-index: 3;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
   animation: unfold 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+}
+
+/* fortune-paper 내부 요소들의 위치 기준을 위해 relative 추가 */
+.fortune-paper {
+  position: relative;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: rgba(255, 140, 66, 0.2);
+  border-radius: 50%;
+  font-size: 24px;
+  font-weight: bold;
+  color: #ff8c42;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+  z-index: 10;
+  line-height: 1;
+  padding: 0;
+  touch-action: manipulation;
+}
+
+.close-btn:hover {
+  background: rgba(255, 140, 66, 0.4);
+  transform: scale(1.1);
+  color: #ff6b35;
+}
+
+.close-btn:active {
+  transform: scale(0.95);
+  background: rgba(255, 140, 66, 0.6);
 }
 
 .fortune-cookie.opened .fortune-paper {
