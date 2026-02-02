@@ -177,6 +177,7 @@ export default {
       bakingImageError: false,
       fortuneImageError: false,
       isShaking: false,
+      createdMessageId: null, // 방금 생성한 메시지 ID (자기 자신이 작성한 메시지 제외용)
     }
   },
   mounted() {
@@ -252,6 +253,7 @@ export default {
       this.currentMessageId = null
       this.newYearMessage = ''
       this.bookRecommendation = ''
+      this.createdMessageId = null // 초기화
       
       setTimeout(() => {
         this.showHeader = true
@@ -280,6 +282,9 @@ export default {
         console.log('메시지 생성 응답:', response.data)
         console.log('생성된 메시지 ID:', response.data.id)
         
+        // 방금 생성한 메시지 ID 저장 (자기 자신이 작성한 메시지 제외용)
+        this.createdMessageId = response.data.id
+        
         // 오븐 애니메이션 시작
         this.currentStep = 'baking'
         this.isBaking = true
@@ -288,7 +293,7 @@ export default {
         setTimeout(async () => {
           this.isBaking = false
           await this.loadCookieCount()
-          // 랜덤 쿠키 가져오기
+          // 랜덤 쿠키 가져오기 (자기 자신이 작성한 메시지 제외)
           this.currentStep = 'opening'
           this.isOpened = false
           this.isShaking = false
@@ -336,10 +341,18 @@ export default {
       this.error = null
       
       try {
-        // 데이터베이스에서 직접 랜덤 메시지 가져오기 (로컬 조회 제외)
-        console.log('랜덤 쿠키 요청 (데이터베이스에서 직접 조회)')
+        // 자기 자신이 작성한 메시지 ID를 제외하기 위한 파라미터
+        const params = {}
+        if (this.createdMessageId) {
+          params.exclude_ids = this.createdMessageId.toString()
+          console.log('자기 자신이 작성한 메시지 제외:', this.createdMessageId)
+        }
+        
+        // 데이터베이스에서 직접 랜덤 메시지 가져오기 (자기 자신이 작성한 메시지 제외)
+        console.log('랜덤 쿠키 요청 (데이터베이스에서 직접 조회):', params)
         
         const response = await axios.get(`${API_BASE_URL}/messages/random`, { 
+          params,
           headers: {
             'Cache-Control': 'no-cache',
             'Pragma': 'no-cache'

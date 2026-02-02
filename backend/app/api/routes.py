@@ -23,8 +23,21 @@ def create_message(message: FortuneMessageCreate, db: Session = Depends(get_db))
     return db_message
 
 @router.get("/messages/random", response_model=FortuneMessageResponse)
-def get_random_message(db: Session = Depends(get_db)):
-    """데이터베이스에서 랜덤 메시지 가져오기 (로컬 조회 제외, DB에서만 조회)"""
+def get_random_message(
+    db: Session = Depends(get_db),
+    exclude_ids: str = Query(None, description="제외할 메시지 ID (자기 자신이 작성한 메시지)")
+):
+    """데이터베이스에서 랜덤 메시지 가져오기 (자기 자신이 작성한 메시지 제외)"""
+    # 제외할 메시지 ID 목록 파싱
+    exclude_id_list = []
+    if exclude_ids:
+        try:
+            exclude_id_list = [int(id.strip()) for id in exclude_ids.split(',') if id.strip()]
+        except ValueError:
+            pass
+    
+    print(f"[DEBUG] 제외할 메시지 ID: {exclude_id_list}")
+    
     # 데이터베이스에서 전체 메시지 개수 확인
     total_count = db.query(FortuneMessage).count()
     print(f"[DEBUG] 데이터베이스 전체 메시지 개수: {total_count}")
@@ -47,19 +60,38 @@ def get_random_message(db: Session = Depends(get_db)):
     all_message_ids = [msg.id for msg in db.query(FortuneMessage).all()]
     print(f"[DEBUG] 데이터베이스에 있는 모든 메시지 ID: {all_message_ids}")
     
-    # 데이터베이스에서 읽지 않은 메시지 우선 조회
-    unread_messages = db.query(FortuneMessage).filter(FortuneMessage.is_read == False).all()
-    print(f"[DEBUG] 데이터베이스에서 읽지 않은 메시지 개수: {len(unread_messages)}")
+    # 자기 자신이 작성한 메시지를 제외한 메시지 조회
+    available_query = db.query(FortuneMessage)
+    if exclude_id_list:
+        available_query = available_query.filter(~FortuneMessage.id.in_(exclude_id_list))
+    
+    # 읽지 않은 메시지 우선 조회 (자기 자신이 작성한 메시지 제외)
+    unread_query = available_query.filter(FortuneMessage.is_read == False)
+    unread_messages = unread_query.all()
+    print(f"[DEBUG] 데이터베이스에서 읽지 않은 메시지 개수 (제외 후): {len(unread_messages)}")
     
     if unread_messages:
         # 읽지 않은 메시지가 있으면 그 중에서 랜덤 선택
         selected_message = random.choice(unread_messages)
         print(f"[DEBUG] 데이터베이스에서 읽지 않은 메시지 선택: id={selected_message.id}")
     else:
-        # 읽지 않은 메시지가 없으면 전체 메시지에서 랜덤 선택
-        all_messages = db.query(FortuneMessage).all()
-        selected_message = random.choice(all_messages)
-        print(f"[DEBUG] 데이터베이스에서 전체 메시지 선택: id={selected_message.id}")
+        # 읽지 않은 메시지가 없으면 전체 사용 가능한 메시지에서 랜덤 선택
+        available_messages = available_query.all()
+        if not available_messages:
+            # 사용 가능한 메시지가 없으면 운영자 메시지 반환
+            print("[DEBUG] ⚠️ 사용 가능한 메시지가 없어서 운영자 메시지 반환")
+            from datetime import datetime
+            default_message = FortuneMessageResponse(
+                id=0,
+                new_year_message="올해도 꿈꾸시는 일 모두 이루시길 바랍니다! 2026년도 파이팅!!💪",
+                book_recommendation="너의 유토피아(정보라) - 저주토끼로 유명한 정보라 작가의 SF 단편소설집입니다. SF 소설 좋아하신다면 읽어보시길 바라요!!",
+                is_read=False,
+                created_at=datetime.utcnow(),
+                read_at=None
+            )
+            return default_message
+        selected_message = random.choice(available_messages)
+        print(f"[DEBUG] 데이터베이스에서 전체 사용 가능한 메시지 선택: id={selected_message.id}")
     
     return selected_message
 
