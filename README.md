@@ -62,11 +62,13 @@ npm run dev
 3. 다음 설정을 적용:
    - **Environment**: Python 3
    - **Python Version**: **3.11.0** (중요: Render 대시보드의 "Advanced" 섹션에서 명시적으로 설정)
-   - **Build Command**: `cd backend && pip install -r requirements.txt`
-   - **Start Command**: `cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT`
-   - **Root Directory**: (비워두기 - 프로젝트 루트 사용)
+   - **Root Directory**: `backend` (중요!)
+   - **Build Command**: `pip install -r requirements.txt`
+   - **Start Command**: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
    
-   **중요**: Python 버전을 3.11.0으로 설정하지 않으면 기본값인 3.13이 사용되어 빌드 오류가 발생할 수 있습니다.
+   **중요 사항**:
+   - Python 버전을 3.11.0으로 설정하지 않으면 기본값인 3.13이 사용되어 빌드 오류가 발생할 수 있습니다.
+   - Root Directory를 `backend`로 설정하면 Build Command와 Start Command에서 `cd backend`를 제거할 수 있습니다.
 4. 환경 변수 설정:
    - `DATABASE_URL`: PostgreSQL 데이터베이스 URL (Render에서 자동 생성 가능)
    - `ENVIRONMENT`: `production` (선택사항)
@@ -79,9 +81,26 @@ npm run dev
 - `GET /api/messages/random`: 랜덤 메시지 가져오기
 - `PATCH /api/messages/{id}/read`: 메시지를 읽음으로 표시
 
+## Vercel 프론트엔드 배포
+
+1. Vercel 대시보드에서 새 프로젝트 생성
+2. GitHub 저장소 연결
+3. **프로젝트 설정**:
+   - **Framework Preset**: Vite
+   - **Root Directory**: `frontend`
+   - **Build Command**: `npm run build`
+   - **Output Directory**: `dist`
+4. **환경 변수 설정** (중요!):
+   - Vercel 대시보드 → 프로젝트 → Settings → Environment Variables
+   - **Name**: `VITE_API_URL`
+   - **Value**: `https://booker-fortune-cookie.onrender.com/api`
+   - **Environment**: Production, Preview, Development 모두 선택
+   
+   이 설정이 없으면 프론트엔드가 `http://localhost:8000/api`를 사용하려고 시도하여 API 호출이 실패합니다.
+
 ## 기술 스택
 
 - **백엔드**: FastAPI, SQLAlchemy, SQLite/PostgreSQL
 - **프론트엔드**: Vue 3, Vue Router, Axios, Vite
-- **배포**: Render
+- **배포**: Render (백엔드), Vercel (프론트엔드)
 
