@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from app.database import get_db
@@ -22,15 +22,36 @@ def create_message(message: FortuneMessageCreate, db: Session = Depends(get_db))
     return db_message
 
 @router.get("/messages/random", response_model=FortuneMessageResponse)
-def get_random_message(db: Session = Depends(get_db)):
-    """읽지 않은 랜덤 메시지 가져오기"""
-    unread_messages = db.query(FortuneMessage).filter(
+def get_random_message(
+    exclude_ids: str = Query(None, description="제외할 메시지 ID 목록 (쉼표로 구분)"),
+    db: Session = Depends(get_db)
+):
+    """읽지 않은 랜덤 메시지 가져오기 (자신이 작성한 메시지 제외)"""
+    # 제외할 메시지 ID 목록 파싱
+    exclude_id_list = []
+    if exclude_ids:
+        try:
+            exclude_id_list = [int(id.strip()) for id in exclude_ids.split(',') if id.strip()]
+        except ValueError:
+            pass
+    
+    # 읽지 않은 메시지 중에서 자신이 작성한 메시지 제외
+    query = db.query(FortuneMessage).filter(
         FortuneMessage.is_read == False
-    ).all()
+    )
+    
+    if exclude_id_list:
+        query = query.filter(~FortuneMessage.id.in_(exclude_id_list))
+    
+    unread_messages = query.all()
     
     if not unread_messages:
-        # 모든 메시지가 읽혔으면 전체에서 랜덤 선택
-        all_messages = db.query(FortuneMessage).all()
+        # 모든 메시지가 읽혔으면 전체에서 랜덤 선택 (자신이 작성한 메시지 제외)
+        query = db.query(FortuneMessage)
+        if exclude_id_list:
+            query = query.filter(~FortuneMessage.id.in_(exclude_id_list))
+        all_messages = query.all()
+        
         if not all_messages:
             raise HTTPException(status_code=404, detail="메시지가 없습니다.")
         selected_message = random.choice(all_messages)

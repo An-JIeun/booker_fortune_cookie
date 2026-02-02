@@ -172,22 +172,24 @@ export default {
       imageError: false,
       bakingImageError: false,
       fortuneImageError: false,
-      isShaking: false
+      isShaking: false,
+      myMessageIds: [] // 자신이 작성한 메시지 ID 목록
     }
   },
-    mounted() {
-      this.loadCookieCount()
-      // 헤더 애니메이션 시작
+  mounted() {
+    this.loadCookieCount()
+    this.loadMyMessageIds()
+    // 헤더 애니메이션 시작
+    setTimeout(() => {
+      this.showHeader = true
       setTimeout(() => {
-        this.showHeader = true
+        this.showMessage = true
         setTimeout(() => {
-          this.showMessage = true
-          setTimeout(() => {
-            this.showButton = true
-          }, 500)
+          this.showButton = true
         }, 500)
       }, 500)
-    },
+    }, 500)
+  },
   methods: {
     getCookiePosition(index) {
       const total = this.cookieBasket.length
@@ -247,6 +249,24 @@ export default {
       
       this.loadCookieCount()
     },
+    loadMyMessageIds() {
+      // localStorage에서 자신이 작성한 메시지 ID 목록 불러오기
+      const stored = localStorage.getItem('myFortuneCookieIds')
+      if (stored) {
+        try {
+          this.myMessageIds = JSON.parse(stored)
+        } catch (e) {
+          this.myMessageIds = []
+        }
+      }
+    },
+    saveMyMessageId(messageId) {
+      // 자신이 작성한 메시지 ID 저장
+      if (!this.myMessageIds.includes(messageId)) {
+        this.myMessageIds.push(messageId)
+        localStorage.setItem('myFortuneCookieIds', JSON.stringify(this.myMessageIds))
+      }
+    },
     async createFortuneCookie() {
       if (!this.newYearMessage.trim() || !this.bookRecommendation.trim() || this.isBaking) return
       
@@ -254,10 +274,13 @@ export default {
       this.error = null
       
       try {
-        await axios.post(`${API_BASE_URL}/messages`, {
+        const response = await axios.post(`${API_BASE_URL}/messages`, {
           new_year_message: this.newYearMessage,
           book_recommendation: this.bookRecommendation
         })
+        
+        // 자신이 작성한 메시지 ID 저장
+        this.saveMyMessageId(response.data.id)
         
         // 오븐 애니메이션 시작
         this.currentStep = 'baking'
@@ -315,7 +338,14 @@ export default {
       this.error = null
       
       try {
-        const response = await axios.get(`${API_BASE_URL}/messages/random`)
+        // 자신이 작성한 메시지 ID 목록을 쿼리 파라미터로 전달
+        const excludeIds = this.myMessageIds.length > 0 
+          ? this.myMessageIds.join(',') 
+          : null
+        
+        const params = excludeIds ? { exclude_ids: excludeIds } : {}
+        const response = await axios.get(`${API_BASE_URL}/messages/random`, { params })
+        
         this.fortuneData = {
           new_year_message: response.data.new_year_message,
           book_recommendation: response.data.book_recommendation
