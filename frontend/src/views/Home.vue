@@ -219,7 +219,10 @@ export default {
     },
     async loadCookieCount() {
       try {
-        const response = await axios.get(`${API_BASE_URL}/messages/count`)
+        // 캐시를 방지하기 위해 타임스탬프 추가
+        const response = await axios.get(`${API_BASE_URL}/messages/count`, {
+          params: { _t: Date.now() }
+        })
         const count = response.data.count
         console.log('쿠키 개수:', count)
         this.cookieBasket = Array(count).fill(null).map((_, i) => ({ id: i + 1 }))
@@ -349,6 +352,8 @@ export default {
           : null
         
         const params = excludeIds ? { exclude_ids: excludeIds } : {}
+        // 캐시를 방지하기 위해 타임스탬프 추가
+        params._t = Date.now()
         console.log('랜덤 쿠키 요청:', { excludeIds, params })
         
         const response = await axios.get(`${API_BASE_URL}/messages/random`, { params })
