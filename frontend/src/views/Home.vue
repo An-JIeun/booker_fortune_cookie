@@ -952,8 +952,6 @@ export default {
   width: 100%;
   height: 100%;
   background: 
-    /* 중앙 압착 부분의 어두운 그림자 (U자 구조 - 접힌 중심에 내부로 힘) */
-    radial-gradient(ellipse at 50% 72%, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0.25) 12%, transparent 25%),
     /* 반 접힌 부분의 하이라이트 (지름을 따라 접힘) */
     radial-gradient(ellipse at 50% 45%, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.3) 18%, transparent 38%),
     /* 좌우 측면 명암 (양측 대칭) */
@@ -994,35 +992,13 @@ export default {
     /* 외부 그림자 */
     0 3px 8px rgba(0, 0, 0, 0.3),
     /* 위쪽 반 접힌 부분의 하이라이트 */
-    inset 0 3px 6px rgba(255, 255, 255, 0.4),
-    /* 중앙 압착 부분의 그림자 (접힌 중심에 내부로 힘) */
-    inset 0 7px 18px rgba(0, 0, 0, 0.4);
+    inset 0 3px 6px rgba(255, 255, 255, 0.4);
   animation: bakingRotate 1.2s infinite;
   overflow: visible;
 }
 
 .cookie-baking-fallback::before {
-  content: '';
-  position: absolute;
-  top: 78%;
-  left: 10%;
-  width: 80%;
-  height: 4px;
-  /* 아래쪽 열린 부분의 가장자리 (투명한 공간의 경계) */
-  background: linear-gradient(to right, 
-    transparent 0%,
-    rgba(0, 0, 0, 0.35) 5%,
-    rgba(0, 0, 0, 0.45) 15%,
-    rgba(0, 0, 0, 0.55) 25%,
-    rgba(0, 0, 0, 0.6) 50%,
-    rgba(0, 0, 0, 0.55) 75%,
-    rgba(0, 0, 0, 0.45) 85%,
-    rgba(0, 0, 0, 0.35) 95%,
-    transparent 100%
-  );
-  border-radius: 2px;
-  transform: translateY(-50%);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+  display: none;
 }
 
 @keyframes baking {
@@ -1143,8 +1119,6 @@ export default {
   width: 100%;
   height: 100%;
   background: 
-    /* 중앙 압착 부분의 어두운 그림자 (U자 구조 - 접힌 중심에 내부로 힘) */
-    radial-gradient(ellipse at 50% 72%, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.2) 12%, transparent 25%),
     /* 반 접힌 부분의 하이라이트 (지름을 따라 접힘) */
     radial-gradient(ellipse at 50% 45%, rgba(255, 255, 255, 0.48) 0%, rgba(255, 255, 255, 0.28) 18%, transparent 38%),
     /* 좌우 측면 명암 (양측 대칭) */
@@ -1182,54 +1156,16 @@ export default {
     /* 외부 그림자 */
     0 5px 15px rgba(0, 0, 0, 0.3),
     /* 위쪽 반 접힌 부분의 하이라이트 */
-    inset 0 3px 6px rgba(255, 255, 255, 0.4),
-    /* 중앙 압착 부분의 그림자 (접힌 중심에 내부로 힘) */
-    inset 0 7px 18px rgba(0, 0, 0, 0.38);
+    inset 0 3px 6px rgba(255, 255, 255, 0.4);
   overflow: visible;
 }
 
 .fortune-cookie-fallback::before {
-  content: '';
-  position: absolute;
-  top: 78%;
-  left: 10%;
-  width: 80%;
-  height: 4px;
-  /* 아래쪽 열린 부분의 가장자리 (투명한 공간의 경계) */
-  background: linear-gradient(to right, 
-    transparent 0%,
-    rgba(0, 0, 0, 0.35) 5%,
-    rgba(0, 0, 0, 0.45) 15%,
-    rgba(0, 0, 0, 0.55) 25%,
-    rgba(0, 0, 0, 0.6) 50%,
-    rgba(0, 0, 0, 0.55) 75%,
-    rgba(0, 0, 0, 0.45) 85%,
-    rgba(0, 0, 0, 0.35) 95%,
-    transparent 100%
-  );
-  border-radius: 2px;
-  transform: translateY(-50%);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+  display: none;
 }
 
 .fortune-cookie-fallback::after {
-  content: '';
-  position: absolute;
-  top: 45%;
-  left: 20%;
-  width: 60%;
-  height: 3px;
-  /* 반 접힌 부분의 하이라이트 */
-  background: linear-gradient(to right, 
-    transparent 0%,
-    rgba(255, 255, 255, 0.55) 20%,
-    rgba(255, 255, 255, 0.65) 50%,
-    rgba(255, 255, 255, 0.55) 80%,
-    transparent 100%
-  );
-  border-radius: 1px;
-  transform: translateY(-50%);
-  box-shadow: 0 1px 3px rgba(255, 255, 255, 0.4);
+  display: none;
 }
 
 @keyframes shake {
