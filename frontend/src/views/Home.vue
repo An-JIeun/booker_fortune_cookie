@@ -519,35 +519,52 @@ export default {
 .cookie-fallback {
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #d4a574 0%, #c49460 100%);
+  background: 
+    radial-gradient(ellipse at 30% 40%, rgba(255, 255, 255, 0.3) 0%, transparent 50%),
+    radial-gradient(ellipse at 70% 60%, rgba(0, 0, 0, 0.15) 0%, transparent 50%),
+    linear-gradient(135deg, #f4c88a 0%, #d4a574 30%, #c49460 70%, #b8864a 100%);
   border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
   position: relative;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 30px;
-  line-height: 1;
+  box-shadow: 
+    0 3px 8px rgba(0, 0, 0, 0.3),
+    inset 0 2px 4px rgba(255, 255, 255, 0.3),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
 }
 
 .cookie-fallback::before {
-  content: '🥠';
+  content: '';
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 30px;
-  line-height: 1;
+  top: 45%;
+  left: 20%;
+  width: 60%;
+  height: 3px;
+  background: linear-gradient(to right, 
+    transparent 0%,
+    rgba(0, 0, 0, 0.2) 20%,
+    rgba(0, 0, 0, 0.3) 50%,
+    rgba(0, 0, 0, 0.2) 80%,
+    transparent 100%
+  );
+  border-radius: 2px;
+  transform: translateY(-50%);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .cookie-fallback::after {
   content: '';
   position: absolute;
-  top: 45%;
+  top: 50%;
   left: 15%;
   width: 70%;
-  height: 1px;
-  background: rgba(0, 0, 0, 0.1);
+  height: 2px;
+  background: linear-gradient(to right, 
+    transparent 0%,
+    rgba(255, 255, 255, 0.4) 20%,
+    rgba(255, 255, 255, 0.5) 50%,
+    rgba(255, 255, 255, 0.4) 80%,
+    transparent 100%
+  );
   border-radius: 1px;
   transform: translateY(-50%);
 }
@@ -910,26 +927,38 @@ export default {
 .cookie-baking-fallback {
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #d4a574 0%, #c49460 100%);
+  background: 
+    radial-gradient(ellipse at 30% 40%, rgba(255, 255, 255, 0.4) 0%, transparent 50%),
+    radial-gradient(ellipse at 70% 60%, rgba(0, 0, 0, 0.2) 0%, transparent 50%),
+    linear-gradient(135deg, #f4c88a 0%, #d4a574 30%, #c49460 70%, #b8864a 100%);
   border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
   position: relative;
   box-shadow: 
     0 0 20px rgba(255, 170, 0, 0.6),
-    0 0 40px rgba(255, 107, 0, 0.4);
+    0 0 40px rgba(255, 107, 0, 0.4),
+    inset 0 2px 4px rgba(255, 255, 255, 0.3),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.2);
   animation: bakingRotate 1.2s infinite;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  overflow: hidden;
 }
 
 .cookie-baking-fallback::before {
-  content: '🥠';
+  content: '';
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 60px;
-  line-height: 1;
+  top: 45%;
+  left: 20%;
+  width: 60%;
+  height: 4px;
+  background: linear-gradient(to right, 
+    transparent 0%,
+    rgba(0, 0, 0, 0.25) 20%,
+    rgba(0, 0, 0, 0.35) 50%,
+    rgba(0, 0, 0, 0.25) 80%,
+    transparent 100%
+  );
+  border-radius: 2px;
+  transform: translateY(-50%);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
 }
 
 @keyframes baking {
@@ -1049,34 +1078,53 @@ export default {
 .fortune-cookie-fallback {
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #d4a574 0%, #c49460 100%);
+  background: 
+    radial-gradient(ellipse at 30% 40%, rgba(255, 255, 255, 0.35) 0%, transparent 50%),
+    radial-gradient(ellipse at 70% 60%, rgba(0, 0, 0, 0.18) 0%, transparent 50%),
+    linear-gradient(135deg, #f4c88a 0%, #d4a574 30%, #c49460 70%, #b8864a 100%);
   border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
   position: relative;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  box-shadow: 
+    0 5px 15px rgba(0, 0, 0, 0.3),
+    inset 0 3px 6px rgba(255, 255, 255, 0.3),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
 }
 
 .fortune-cookie-fallback::before {
-  content: '🥠';
+  content: '';
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 80px;
-  line-height: 1;
+  top: 45%;
+  left: 20%;
+  width: 60%;
+  height: 5px;
+  background: linear-gradient(to right, 
+    transparent 0%,
+    rgba(0, 0, 0, 0.25) 20%,
+    rgba(0, 0, 0, 0.4) 50%,
+    rgba(0, 0, 0, 0.25) 80%,
+    transparent 100%
+  );
+  border-radius: 3px;
+  transform: translateY(-50%);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .fortune-cookie-fallback::after {
   content: '';
   position: absolute;
-  top: 45%;
+  top: 50%;
   left: 15%;
   width: 70%;
-  height: 1px;
-  background: rgba(0, 0, 0, 0.1);
-  border-radius: 1px;
+  height: 3px;
+  background: linear-gradient(to right, 
+    transparent 0%,
+    rgba(255, 255, 255, 0.5) 20%,
+    rgba(255, 255, 255, 0.6) 50%,
+    rgba(255, 255, 255, 0.5) 80%,
+    transparent 100%
+  );
+  border-radius: 2px;
   transform: translateY(-50%);
 }
 
