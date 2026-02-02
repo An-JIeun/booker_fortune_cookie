@@ -203,7 +203,18 @@ export default {
       if (total === 0) return {}
       
       const angle = (index / total) * 2 * Math.PI
-      const radius = 70
+      // 접시 크기에 비례하여 radius 계산 (접시 반지름의 약 35%로 조정하여 안쪽으로 배치)
+      // 기본 접시: 280px (반지름 140px) -> radius 49px
+      // 태블릿 접시: 240px (반지름 120px) -> radius 42px  
+      // 모바일 접시: 200px (반지름 100px) -> radius 35px
+      let radius
+      if (window.innerWidth <= 400) {
+        radius = 35  // 모바일: 접시 반지름 100px의 35%
+      } else if (window.innerWidth <= 768) {
+        radius = 42  // 태블릿: 접시 반지름 120px의 35%
+      } else {
+        radius = 49  // 데스크톱: 접시 반지름 140px의 35%
+      }
       const x = Math.cos(angle) * radius
       const y = Math.sin(angle) * radius
       const rotation = (angle * 180) / Math.PI
@@ -480,22 +491,35 @@ export default {
   height: 50px;
   opacity: 0;
   transform-origin: center;
-  animation: cookieDrop 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  animation: cookieDrop 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
   animation-delay: var(--animation-delay, 0s);
 }
 
-/* 애니메이션: 위에서 떨어지면서 회전하며 최종 위치로 이동 */
+/* 애니메이션: 위에서 떨어지면서 회전하며 최종 위치로 이동 (자연스러운 중력 효과) */
 @keyframes cookieDrop {
   0% {
     opacity: 0;
-    transform: translate(var(--final-x, 0px), calc(var(--final-y, 0px) - 250px)) rotate(0deg) scale(0.3);
+    transform: translate(var(--final-x, 0px), calc(var(--final-y, 0px) - 200px)) rotate(0deg) scale(0.5);
   }
-  60% {
+  20% {
+    opacity: 0.8;
+    transform: translate(var(--final-x, 0px), calc(var(--final-y, 0px) - 120px)) rotate(90deg) scale(0.7);
+  }
+  40% {
     opacity: 1;
-    transform: translate(var(--final-x, 0px), calc(var(--final-y, 0px) + 15px)) rotate(360deg) scale(1.15);
+    transform: translate(var(--final-x, 0px), calc(var(--final-y, 0px) - 40px)) rotate(180deg) scale(0.9);
   }
-  80% {
-    transform: translate(var(--final-x, 0px), calc(var(--final-y, 0px) - 5px)) rotate(360deg) scale(0.95);
+  55% {
+    opacity: 1;
+    transform: translate(var(--final-x, 0px), calc(var(--final-y, 0px) + 8px)) rotate(270deg) scale(1.05);
+  }
+  70% {
+    opacity: 1;
+    transform: translate(var(--final-x, 0px), calc(var(--final-y, 0px) - 3px)) rotate(340deg) scale(0.98);
+  }
+  85% {
+    opacity: 1;
+    transform: translate(var(--final-x, 0px), calc(var(--final-y, 0px) + 1px)) rotate(var(--final-rotation, 0deg)) scale(1.01);
   }
   100% {
     opacity: 1;
@@ -535,14 +559,16 @@ export default {
     linear-gradient(135deg, #f4c88a 0%, #d4a574 30%, #c49460 70%, #b8864a 100%);
   /* 얇은 원형 → 반 접힘 형태 */
   border-radius: 50% 50% 50% 50% / 45% 45% 55% 55%;
-  /* 원형에서 아래쪽 30도 부분 제외 (165도 ~ 195도) */
+  /* 원형에서 아래쪽 15도 부분 제외 (172.5도 ~ 187.5도), 끝부분 둥글게 */
   clip-path: polygon(
     50% 0%,
     100% 0%,
     100% 50%,
-    96.6% 63.3%,
+    99.1% 56.5%,
+    98.5% 58%,
     50% 50%,
-    3.4% 63.3%,
+    1.5% 58%,
+    0.9% 56.5%,
     0% 50%,
     0% 0%
   );
@@ -552,10 +578,8 @@ export default {
     0 3px 8px rgba(0, 0, 0, 0.3),
     /* 위쪽 반 접힌 부분의 하이라이트 */
     inset 0 3px 6px rgba(255, 255, 255, 0.4),
-    /* 중앙 압착 부분의 그림자 (U자 구조) */
-    inset 0 6px 15px rgba(0, 0, 0, 0.3),
-    /* 아래쪽 U자 내부의 깊은 그림자 */
-    inset 0 10px 25px rgba(0, 0, 0, 0.4);
+    /* 중앙 압착 부분의 그림자 */
+    inset 0 6px 15px rgba(0, 0, 0, 0.3);
   overflow: visible;
 }
 
@@ -977,14 +1001,16 @@ export default {
     linear-gradient(135deg, #f4c88a 0%, #d4a574 30%, #c49460 70%, #b8864a 100%);
   /* 얇은 원형 → 반 접힘 형태 */
   border-radius: 50% 50% 50% 50% / 45% 45% 55% 55%;
-  /* 원형에서 아래쪽 30도 부분 제외 (165도 ~ 195도) */
+  /* 원형에서 아래쪽 15도 부분 제외 (172.5도 ~ 187.5도), 끝부분 둥글게 */
   clip-path: polygon(
     50% 0%,
     100% 0%,
     100% 50%,
-    96.6% 63.3%,
+    99.1% 56.5%,
+    98.5% 58%,
     50% 50%,
-    3.4% 63.3%,
+    1.5% 58%,
+    0.9% 56.5%,
     0% 50%,
     0% 0%
   );
@@ -1160,14 +1186,16 @@ export default {
     linear-gradient(135deg, #f4c88a 0%, #d4a574 30%, #c49460 70%, #b8864a 100%);
   /* 얇은 원형 → 반 접힘 형태 */
   border-radius: 50% 50% 50% 50% / 45% 45% 55% 55%;
-  /* 원형에서 아래쪽 30도 부분 제외 (165도 ~ 195도) */
+  /* 원형에서 아래쪽 15도 부분 제외 (172.5도 ~ 187.5도), 끝부분 둥글게 */
   clip-path: polygon(
     50% 0%,
     100% 0%,
     100% 50%,
-    96.6% 63.3%,
+    99.1% 56.5%,
+    98.5% 58%,
     50% 50%,
-    3.4% 63.3%,
+    1.5% 58%,
+    0.9% 56.5%,
     0% 50%,
     0% 0%
   );
