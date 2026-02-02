@@ -1408,7 +1408,11 @@ export default {
   }
 
   .input-section, .baking-section, .fortune-section {
-    padding: 1.5rem;
+    padding: 1.2rem;
+  }
+
+  .home-container {
+    padding: 15px;
   }
 
   .oven {
@@ -1449,6 +1453,14 @@ export default {
   .fortune-paper {
     width: 200px;
     padding: 0.8rem;
+  }
+
+  .input-section {
+    padding: 1rem;
+  }
+
+  .home-container {
+    padding: 10px;
   }
 }
 </style>
