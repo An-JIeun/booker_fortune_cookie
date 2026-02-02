@@ -61,10 +61,12 @@ npm run dev
 2. GitHub 저장소 연결 (자동 배포 활성화)
 3. 다음 설정을 적용:
    - **Environment**: Python 3
-   - **Python Version**: 3.11.0 (중요: runtime.txt 파일 참조)
+   - **Python Version**: **3.11.0** (중요: Render 대시보드의 "Advanced" 섹션에서 명시적으로 설정)
    - **Build Command**: `cd backend && pip install -r requirements.txt`
    - **Start Command**: `cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT`
    - **Root Directory**: (비워두기 - 프로젝트 루트 사용)
+   
+   **중요**: Python 버전을 3.11.0으로 설정하지 않으면 기본값인 3.13이 사용되어 빌드 오류가 발생할 수 있습니다.
 4. 환경 변수 설정:
    - `DATABASE_URL`: PostgreSQL 데이터베이스 URL (Render에서 자동 생성 가능)
    - `ENVIRONMENT`: `production` (선택사항)
