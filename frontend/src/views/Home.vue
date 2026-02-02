@@ -521,7 +521,7 @@ export default {
   height: 100%;
   background: 
     /* 중앙 압착 부분의 어두운 그림자 (U자 구조) */
-    radial-gradient(ellipse at 50% 75%, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0.15) 15%, transparent 30%),
+    radial-gradient(ellipse at 50% 70%, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0.15) 15%, transparent 30%),
     /* 반 접힌 부분의 하이라이트 */
     radial-gradient(ellipse at 50% 45%, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.2) 20%, transparent 40%),
     /* 좌우 측면 명암 */
@@ -535,8 +535,20 @@ export default {
     linear-gradient(135deg, #f4c88a 0%, #d4a574 30%, #c49460 70%, #b8864a 100%);
   /* 얇은 원형 → 반 접힘 형태 */
   border-radius: 50% 50% 50% 50% / 45% 45% 55% 55%;
-  /* 중앙 압착된 U자 구조 */
-  clip-path: ellipse(50% 45% at 50% 50%);
+  /* 아래 부분이 완전히 끊겨서 U자로 열린 구조 */
+  clip-path: polygon(
+    0% 0%,
+    100% 0%,
+    100% 70%,
+    95% 75%,
+    85% 80%,
+    70% 82%,
+    50% 83%,
+    30% 82%,
+    15% 80%,
+    5% 75%,
+    0% 70%
+  );
   position: relative;
   box-shadow: 
     /* 외부 그림자 */
@@ -544,34 +556,34 @@ export default {
     /* 위쪽 반 접힌 부분의 하이라이트 */
     inset 0 3px 6px rgba(255, 255, 255, 0.4),
     /* 중앙 압착 부분의 그림자 (U자 구조) */
-    inset 0 8px 20px rgba(0, 0, 0, 0.3),
-    /* 아래쪽 반 접힌 부분의 그림자 */
-    inset 0 -2px 4px rgba(0, 0, 0, 0.2);
-  overflow: hidden;
+    inset 0 6px 15px rgba(0, 0, 0, 0.3),
+    /* 아래쪽 U자 내부의 깊은 그림자 */
+    inset 0 10px 25px rgba(0, 0, 0, 0.4);
+  overflow: visible;
 }
 
 .cookie-fallback::before {
   content: '';
   position: absolute;
-  top: 70%;
-  left: 25%;
-  width: 50%;
-  height: 8px;
-  /* 중앙 압착된 부분의 깊은 주름 (U자 구조) */
+  top: 78%;
+  left: 10%;
+  width: 80%;
+  height: 3px;
+  /* 아래쪽 열린 부분의 가장자리 (투명한 공간의 경계) */
   background: linear-gradient(to right, 
     transparent 0%,
-    rgba(0, 0, 0, 0.3) 15%,
-    rgba(0, 0, 0, 0.4) 30%,
-    rgba(0, 0, 0, 0.5) 50%,
-    rgba(0, 0, 0, 0.4) 70%,
-    rgba(0, 0, 0, 0.3) 85%,
+    rgba(0, 0, 0, 0.3) 5%,
+    rgba(0, 0, 0, 0.4) 15%,
+    rgba(0, 0, 0, 0.5) 25%,
+    rgba(0, 0, 0, 0.55) 50%,
+    rgba(0, 0, 0, 0.5) 75%,
+    rgba(0, 0, 0, 0.4) 85%,
+    rgba(0, 0, 0, 0.3) 95%,
     transparent 100%
   );
-  border-radius: 0 0 50% 50%;
+  border-radius: 2px;
   transform: translateY(-50%);
-  box-shadow: 
-    0 2px 4px rgba(0, 0, 0, 0.2),
-    inset 0 2px 3px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .cookie-fallback::after {
@@ -954,7 +966,7 @@ export default {
   height: 100%;
   background: 
     /* 중앙 압착 부분의 어두운 그림자 (U자 구조) */
-    radial-gradient(ellipse at 50% 75%, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.2) 15%, transparent 30%),
+    radial-gradient(ellipse at 50% 70%, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.2) 15%, transparent 30%),
     /* 반 접힌 부분의 하이라이트 */
     radial-gradient(ellipse at 50% 45%, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.3) 20%, transparent 40%),
     /* 좌우 측면 명암 */
@@ -968,8 +980,18 @@ export default {
     linear-gradient(135deg, #f4c88a 0%, #d4a574 30%, #c49460 70%, #b8864a 100%);
   /* 얇은 원형 → 반 접힘 형태 */
   border-radius: 50% 50% 50% 50% / 45% 45% 55% 55%;
-  /* 중앙 압착된 U자 구조 */
-  clip-path: ellipse(50% 45% at 50% 50%);
+  /* 아래쪽 약 20도 각도 부분이 완전히 비어있는 구조 (투명한 공간) */
+  clip-path: polygon(
+    0% 0%,
+    100% 0%,
+    100% 80%,
+    90% 85%,
+    75% 88%,
+    50% 90%,
+    25% 88%,
+    10% 85%,
+    0% 80%
+  );
   position: relative;
   box-shadow: 
     /* 오븐 빛 효과 */
@@ -979,36 +1001,34 @@ export default {
     0 3px 8px rgba(0, 0, 0, 0.3),
     /* 위쪽 반 접힌 부분의 하이라이트 */
     inset 0 3px 6px rgba(255, 255, 255, 0.4),
-    /* 중앙 압착 부분의 그림자 (U자 구조) */
-    inset 0 8px 20px rgba(0, 0, 0, 0.3),
-    /* 아래쪽 반 접힌 부분의 그림자 */
-    inset 0 -2px 4px rgba(0, 0, 0, 0.2);
+    /* 중앙 압착 부분의 그림자 */
+    inset 0 6px 15px rgba(0, 0, 0, 0.3);
   animation: bakingRotate 1.2s infinite;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .cookie-baking-fallback::before {
   content: '';
   position: absolute;
-  top: 70%;
-  left: 25%;
-  width: 50%;
-  height: 10px;
-  /* 중앙 압착된 부분의 깊은 주름 (U자 구조) */
+  top: 78%;
+  left: 10%;
+  width: 80%;
+  height: 4px;
+  /* 아래쪽 열린 부분의 가장자리 (투명한 공간의 경계) */
   background: linear-gradient(to right, 
     transparent 0%,
-    rgba(0, 0, 0, 0.35) 15%,
-    rgba(0, 0, 0, 0.45) 30%,
-    rgba(0, 0, 0, 0.55) 50%,
-    rgba(0, 0, 0, 0.45) 70%,
-    rgba(0, 0, 0, 0.35) 85%,
+    rgba(0, 0, 0, 0.35) 5%,
+    rgba(0, 0, 0, 0.45) 15%,
+    rgba(0, 0, 0, 0.55) 25%,
+    rgba(0, 0, 0, 0.6) 50%,
+    rgba(0, 0, 0, 0.55) 75%,
+    rgba(0, 0, 0, 0.45) 85%,
+    rgba(0, 0, 0, 0.35) 95%,
     transparent 100%
   );
-  border-radius: 0 0 50% 50%;
+  border-radius: 2px;
   transform: translateY(-50%);
-  box-shadow: 
-    0 2px 5px rgba(0, 0, 0, 0.25),
-    inset 0 2px 4px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
 }
 
 @keyframes baking {
@@ -1144,43 +1164,51 @@ export default {
     linear-gradient(135deg, #f4c88a 0%, #d4a574 30%, #c49460 70%, #b8864a 100%);
   /* 얇은 원형 → 반 접힘 형태 */
   border-radius: 50% 50% 50% 50% / 45% 45% 55% 55%;
-  /* 중앙 압착된 U자 구조 */
-  clip-path: ellipse(50% 45% at 50% 50%);
+  /* 아래쪽 약 20도 각도 부분이 완전히 비어있는 구조 (투명한 공간) */
+  clip-path: polygon(
+    0% 0%,
+    100% 0%,
+    100% 80%,
+    90% 85%,
+    75% 88%,
+    50% 90%,
+    25% 88%,
+    10% 85%,
+    0% 80%
+  );
   position: relative;
   box-shadow: 
     /* 외부 그림자 */
     0 5px 15px rgba(0, 0, 0, 0.3),
     /* 위쪽 반 접힌 부분의 하이라이트 */
     inset 0 3px 6px rgba(255, 255, 255, 0.4),
-    /* 중앙 압착 부분의 그림자 (U자 구조) */
-    inset 0 8px 20px rgba(0, 0, 0, 0.35),
-    /* 아래쪽 반 접힌 부분의 그림자 */
-    inset 0 -3px 6px rgba(0, 0, 0, 0.25);
-  overflow: hidden;
+    /* 중앙 압착 부분의 그림자 */
+    inset 0 6px 15px rgba(0, 0, 0, 0.3);
+  overflow: visible;
 }
 
 .fortune-cookie-fallback::before {
   content: '';
   position: absolute;
-  top: 70%;
-  left: 25%;
-  width: 50%;
-  height: 12px;
-  /* 중앙 압착된 부분의 깊은 주름 (U자 구조) */
+  top: 78%;
+  left: 10%;
+  width: 80%;
+  height: 4px;
+  /* 아래쪽 열린 부분의 가장자리 (투명한 공간의 경계) */
   background: linear-gradient(to right, 
     transparent 0%,
-    rgba(0, 0, 0, 0.35) 15%,
-    rgba(0, 0, 0, 0.45) 30%,
-    rgba(0, 0, 0, 0.55) 50%,
-    rgba(0, 0, 0, 0.45) 70%,
-    rgba(0, 0, 0, 0.35) 85%,
+    rgba(0, 0, 0, 0.35) 5%,
+    rgba(0, 0, 0, 0.45) 15%,
+    rgba(0, 0, 0, 0.55) 25%,
+    rgba(0, 0, 0, 0.6) 50%,
+    rgba(0, 0, 0, 0.55) 75%,
+    rgba(0, 0, 0, 0.45) 85%,
+    rgba(0, 0, 0, 0.35) 95%,
     transparent 100%
   );
-  border-radius: 0 0 50% 50%;
+  border-radius: 2px;
   transform: translateY(-50%);
-  box-shadow: 
-    0 3px 6px rgba(0, 0, 0, 0.25),
-    inset 0 3px 5px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
 }
 
 .fortune-cookie-fallback::after {
