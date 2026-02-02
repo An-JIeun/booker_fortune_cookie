@@ -23,8 +23,8 @@ def create_message(message: FortuneMessageCreate, db: Session = Depends(get_db))
 
 @router.get("/messages/random", response_model=FortuneMessageResponse)
 def get_random_message(
-    exclude_ids: str = Query(None, description="제외할 메시지 ID 목록 (쉼표로 구분)"),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    exclude_ids: str = Query(None, description="제외할 메시지 ID 목록 (쉼표로 구분)")
 ):
     """읽지 않은 랜덤 메시지 가져오기 (자신이 작성한 메시지 제외)"""
     # 제외할 메시지 ID 목록 파싱
@@ -35,6 +35,13 @@ def get_random_message(
         except ValueError:
             pass
     
+    print(f"[DEBUG] exclude_ids 파라미터: {exclude_ids}")
+    print(f"[DEBUG] exclude_id_list: {exclude_id_list}")
+    
+    # 전체 메시지 개수 확인
+    total_count = db.query(FortuneMessage).count()
+    print(f"[DEBUG] 전체 메시지 개수: {total_count}")
+    
     # 읽지 않은 메시지 중에서 자신이 작성한 메시지 제외
     query = db.query(FortuneMessage).filter(
         FortuneMessage.is_read == False
@@ -44,6 +51,7 @@ def get_random_message(
         query = query.filter(~FortuneMessage.id.in_(exclude_id_list))
     
     unread_messages = query.all()
+    print(f"[DEBUG] 읽지 않은 메시지 개수 (제외 후): {len(unread_messages)}")
     
     if not unread_messages:
         # 모든 메시지가 읽혔으면 전체에서 랜덤 선택 (자신이 작성한 메시지 제외)
@@ -51,9 +59,11 @@ def get_random_message(
         if exclude_id_list:
             query = query.filter(~FortuneMessage.id.in_(exclude_id_list))
         all_messages = query.all()
+        print(f"[DEBUG] 전체 메시지 개수 (제외 후): {len(all_messages)}")
         
         if not all_messages:
             # 메시지가 없으면 운영자의 기본 메시지 반환
+            print("[DEBUG] 메시지가 없어서 운영자 메시지 반환")
             from datetime import datetime
             default_message = FortuneMessageResponse(
                 id=0,
@@ -65,8 +75,10 @@ def get_random_message(
             )
             return default_message
         selected_message = random.choice(all_messages)
+        print(f"[DEBUG] 전체 메시지에서 선택: id={selected_message.id}")
     else:
         selected_message = random.choice(unread_messages)
+        print(f"[DEBUG] 읽지 않은 메시지에서 선택: id={selected_message.id}")
     
     return selected_message
 

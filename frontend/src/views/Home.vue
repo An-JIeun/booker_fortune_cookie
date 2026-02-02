@@ -221,6 +221,7 @@ export default {
       try {
         const response = await axios.get(`${API_BASE_URL}/messages/count`)
         const count = response.data.count
+        console.log('쿠키 개수:', count)
         this.cookieBasket = Array(count).fill(null).map((_, i) => ({ id: i + 1 }))
       } catch (err) {
         console.error('쿠키 개수 로드 실패:', err)
@@ -348,7 +349,10 @@ export default {
           : null
         
         const params = excludeIds ? { exclude_ids: excludeIds } : {}
+        console.log('랜덤 쿠키 요청:', { excludeIds, params })
+        
         const response = await axios.get(`${API_BASE_URL}/messages/random`, { params })
+        console.log('랜덤 쿠키 응답:', response.data)
         
         this.fortuneData = {
           new_year_message: response.data.new_year_message,
@@ -356,8 +360,8 @@ export default {
         }
         this.currentMessageId = response.data.id
         
-        // 메시지를 읽음으로 표시
-        if (this.currentMessageId) {
+        // 운영자 메시지(id=0)가 아닌 경우에만 읽음 처리
+        if (this.currentMessageId && this.currentMessageId !== 0) {
           try {
             await axios.patch(`${API_BASE_URL}/messages/${this.currentMessageId}/read`)
           } catch (err) {
@@ -365,8 +369,10 @@ export default {
           }
         }
       } catch (err) {
+        console.error('랜덤 쿠키 가져오기 실패:', err)
         this.error = '포춘 쿠키를 가져오는데 실패했습니다.'
-        console.error(err)
+        this.currentMessageId = null
+        this.fortuneData = { new_year_message: '', book_recommendation: '' }
         this.currentStep = 'home'
       } finally {
         this.loading = false
