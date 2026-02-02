@@ -1,6 +1,5 @@
 from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import DeclarativeBase, sessionmaker
 import os
 
 # 데이터베이스 URL (SQLite 사용, Render에서는 PostgreSQL로 변경 가능)
@@ -12,7 +11,10 @@ else:
     engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-Base = declarative_base()
+
+# SQLAlchemy 2.0 스타일의 DeclarativeBase 사용 (Python 3.13 호환)
+class Base(DeclarativeBase):
+    pass
 
 def get_db():
     db = SessionLocal()

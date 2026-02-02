@@ -67,8 +67,8 @@ npm run dev
    - **Start Command**: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
    
    **중요 사항**:
-   - Python 버전을 3.11.0으로 설정하지 않으면 기본값인 3.13이 사용되어 빌드 오류가 발생할 수 있습니다.
    - Root Directory를 `backend`로 설정하면 Build Command와 Start Command에서 `cd backend`를 제거할 수 있습니다.
+   - Python 3.11 또는 3.13 모두 지원합니다. 최신 패키지 버전으로 Python 3.13 호환성 문제가 해결되었습니다.
 4. 환경 변수 설정:
    - `DATABASE_URL`: PostgreSQL 데이터베이스 URL (Render에서 자동 생성 가능)
    - `ENVIRONMENT`: `production` (선택사항)
