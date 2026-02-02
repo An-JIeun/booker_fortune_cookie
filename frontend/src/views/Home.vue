@@ -219,13 +219,23 @@ export default {
     },
     async loadCookieCount() {
       try {
-        // 캐시를 방지하기 위해 타임스탬프 추가
+        // 데이터베이스에서 최신 개수를 가져오기 위해 캐시 방지
         const response = await axios.get(`${API_BASE_URL}/messages/count`, {
-          params: { _t: Date.now() }
+          params: { _t: Date.now() },
+          headers: {
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache'
+          }
         })
         const count = response.data.count
-        console.log('쿠키 개수:', count)
-        this.cookieBasket = Array(count).fill(null).map((_, i) => ({ id: i + 1 }))
+        console.log('데이터베이스에서 조회한 쿠키 개수:', count)
+        
+        // 데이터베이스에 있는 실제 개수만큼 쿠키 표시
+        if (count > 0) {
+          this.cookieBasket = Array(count).fill(null).map((_, i) => ({ id: i + 1 }))
+        } else {
+          this.cookieBasket = []
+        }
       } catch (err) {
         console.error('쿠키 개수 로드 실패:', err)
         this.cookieBasket = []
@@ -287,8 +297,12 @@ export default {
           book_recommendation: this.bookRecommendation
         })
         
+        console.log('메시지 생성 응답:', response.data)
+        console.log('생성된 메시지 ID:', response.data.id)
+        
         // 자신이 작성한 메시지 ID 저장
         this.saveMyMessageId(response.data.id)
+        console.log('저장된 내 메시지 ID 목록:', this.myMessageIds)
         
         // 오븐 애니메이션 시작
         this.currentStep = 'baking'
@@ -354,16 +368,32 @@ export default {
         const params = excludeIds ? { exclude_ids: excludeIds } : {}
         // 캐시를 방지하기 위해 타임스탬프 추가
         params._t = Date.now()
-        console.log('랜덤 쿠키 요청:', { excludeIds, params })
+        console.log('랜덤 쿠키 요청 (데이터베이스에서 조회):', { 
+          excludeIds, 
+          myMessageIds: this.myMessageIds,
+          params 
+        })
         
-        const response = await axios.get(`${API_BASE_URL}/messages/random`, { params })
+        // 데이터베이스에서 직접 랜덤 메시지 가져오기
+        const response = await axios.get(`${API_BASE_URL}/messages/random`, { 
+          params,
+          headers: {
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache'
+          }
+        })
         console.log('랜덤 쿠키 응답:', response.data)
+        console.log('받은 메시지 ID:', response.data.id)
         
         this.fortuneData = {
           new_year_message: response.data.new_year_message,
           book_recommendation: response.data.book_recommendation
         }
         this.currentMessageId = response.data.id
+        
+        if (this.currentMessageId === 0) {
+          console.warn('⚠️ 운영자 메시지가 반환되었습니다. 데이터베이스에 메시지가 없거나 모든 메시지가 제외되었을 수 있습니다.')
+        }
         
         // 운영자 메시지(id=0)가 아닌 경우에만 읽음 처리
         if (this.currentMessageId && this.currentMessageId !== 0) {
