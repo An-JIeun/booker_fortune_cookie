@@ -3,11 +3,13 @@ from datetime import datetime
 from typing import Optional
 
 class FortuneMessageCreate(BaseModel):
-    message: str
+    new_year_message: str
+    book_recommendation: str
 
 class FortuneMessageResponse(BaseModel):
     id: int
-    message: str
+    new_year_message: str
+    book_recommendation: str
     is_read: bool
     created_at: datetime
     read_at: Optional[datetime] = None

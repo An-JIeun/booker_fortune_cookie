@@ -31,7 +31,6 @@ booker_fortune_cookie/
 │   ├── index.html
 │   ├── package.json
 │   └── vite.config.js
-└── render.yaml          # Render 배포 설정
 ```
 
 ## 로컬 개발 환경 설정
@@ -59,10 +58,15 @@ npm run dev
 ## Render 배포
 
 1. Render 대시보드에서 새 Web Service 생성
-2. GitHub 저장소 연결
-3. `render.yaml` 파일의 설정 사용
+2. GitHub 저장소 연결 (자동 배포 활성화)
+3. 다음 설정을 적용:
+   - **Environment**: Python 3
+   - **Build Command**: `cd backend && pip install -r requirements.txt`
+   - **Start Command**: `cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT`
+   - **Root Directory**: (비워두기 - 프로젝트 루트 사용)
 4. 환경 변수 설정:
    - `DATABASE_URL`: PostgreSQL 데이터베이스 URL (Render에서 자동 생성 가능)
+   - `ENVIRONMENT`: `production` (선택사항)
 
 ## API 엔드포인트
 

@@ -11,7 +11,11 @@ router = APIRouter()
 @router.post("/messages", response_model=FortuneMessageResponse)
 def create_message(message: FortuneMessageCreate, db: Session = Depends(get_db)):
     """새로운 포춘 쿠키 메시지 생성"""
-    db_message = FortuneMessage(message=message.message, is_read=False)
+    db_message = FortuneMessage(
+        new_year_message=message.new_year_message,
+        book_recommendation=message.book_recommendation,
+        is_read=False
+    )
     db.add(db_message)
     db.commit()
     db.refresh(db_message)
@@ -48,4 +52,10 @@ def mark_as_read(message_id: int, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(message)
     return message
+
+@router.get("/messages/count")
+def get_message_count(db: Session = Depends(get_db)):
+    """전체 메시지 개수 조회"""
+    count = db.query(FortuneMessage).count()
+    return {"count": count}
 

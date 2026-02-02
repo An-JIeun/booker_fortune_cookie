@@ -1,31 +1,142 @@
 <template>
   <div class="home-container">
-    <h1 class="title">🍪 포춘 쿠키</h1>
-    
-    <div v-if="!showFortune" class="input-section">
-      <textarea
-        v-model="message"
-        placeholder="메시지를 입력하세요..."
-        class="message-input"
-        rows="4"
-      ></textarea>
-      <button @click="submitMessage" class="submit-btn" :disabled="!message.trim()">
-        메시지 보내기
-      </button>
-      <button @click="getFortune" class="fortune-btn">
-        포춘 쿠키 열기 🍪
+    <!-- 첫 화면: 포춘쿠키 접시와 헤더 -->
+    <div v-if="currentStep === 'home'" class="home-screen">
+      <!-- 포춘쿠키 접시 -->
+      <div class="plate-container">
+        <div class="plate">
+          <div 
+            v-for="(cookie, index) in cookieBasket" 
+            :key="index"
+            class="cookie-on-plate"
+            :style="getCookiePosition(index)"
+            :data-index="index"
+          >
+            <div class="cookie-image-wrapper">
+              <img 
+                src="/fortune-cookie.png" 
+                alt="포춘쿠키" 
+                class="cookie-image"
+                @error="handleImageError"
+              />
+              <div class="cookie-fallback" v-if="imageError"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 헤더 애니메이션 -->
+      <h1 class="header-title" :class="{ 'show': showHeader }">
+        활자중독자들 설날 이벤트<br>
+        <span class="subtitle">~독서 포춘쿠키 나누기~</span>
+      </h1>
+
+      <!-- 안내 메시지 -->
+      <p class="header-message" :class="{ 'show': showMessage }">
+        쿠키를 구우면 다른 회원이 구운 쿠키를 받을 수 있습니다!<br>
+        회원들에게 연초 인사와 책 추천 글을 작성해주세요!
+      </p>
+
+      <!-- 나도 쿠키 만들기 버튼 -->
+      <button 
+        v-if="showHeader" 
+        class="create-cookie-btn" 
+        :class="{ 'show': showButton }"
+        @click="goToInput"
+      >
+        나도 쿠키 만들기
       </button>
     </div>
 
-    <div v-if="showFortune" class="fortune-section">
-      <div class="fortune-cookie" :class="{ 'opened': isOpened }" @click="openCookie">
-        <div class="cookie-top" v-if="!isOpened"></div>
-        <div class="cookie-bottom" v-if="!isOpened"></div>
-        <div class="fortune-paper" v-if="isOpened">
-          <p class="fortune-text">{{ fortuneMessage }}</p>
+    <!-- 메시지 입력 섹션 -->
+    <div v-if="currentStep === 'input'" class="input-section">
+      <h2 class="input-title">포춘 쿠키 만들기</h2>
+      
+      <div class="input-group">
+        <label class="input-label">쿠키를 열어볼 사람을 위한 설날 메시지</label>
+        <textarea
+          v-model="newYearMessage"
+          placeholder="설날을 축하하는 따뜻한 메시지를 입력하세요..."
+          class="message-input"
+          rows="4"
+        ></textarea>
+      </div>
+
+      <div class="input-group">
+        <label class="input-label">멤버를 위한 책 추천</label>
+        <textarea
+          v-model="bookRecommendation"
+          placeholder="추천하고 싶은 책과 이유를 입력하세요..."
+          class="message-input"
+          rows="4"
+        ></textarea>
+      </div>
+
+      <button 
+        @click="createFortuneCookie" 
+        class="create-btn" 
+        :disabled="!newYearMessage.trim() || !bookRecommendation.trim() || isBaking"
+      >
+        {{ isBaking ? '구워지는 중...' : '포춘쿠키 만들기 🍪' }}
+      </button>
+      <button @click="goHome" class="back-btn">돌아가기</button>
+    </div>
+
+    <!-- 오븐 애니메이션 섹션 -->
+    <div v-if="currentStep === 'baking'" class="baking-section">
+      <div class="oven">
+        <div class="oven-door">
+          <div class="oven-window">
+            <div class="flame flame1"></div>
+            <div class="flame flame2"></div>
+            <div class="flame flame3"></div>
+            <div class="cookie-in-oven" :class="{ 'baking': true }">
+              <div class="cookie-baking">
+                <img 
+                  src="/fortune-cookie.png" 
+                  alt="포춘쿠키" 
+                  class="cookie-baking-image"
+                  @error="handleBakingImageError"
+                />
+                <div class="cookie-baking-fallback" v-if="bakingImageError"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="oven-controls">
+          <div class="oven-knob"></div>
         </div>
       </div>
-      <button @click="reset" class="reset-btn">다시 하기</button>
+      <p class="baking-text">포춘 쿠키를 구우는 중...</p>
+    </div>
+
+    <!-- 포춘 쿠키 열기 섹션 -->
+    <div v-if="currentStep === 'opening'" class="fortune-section">
+      <div class="fortune-cookie" :class="{ 'opened': isOpened, 'shaking': isShaking }" @click="shakeAndOpenCookie">
+        <div v-if="!isOpened" class="cookie-image-container">
+          <img 
+            src="/fortune-cookie.png" 
+            alt="포춘쿠키" 
+            class="fortune-cookie-image"
+            @error="handleFortuneImageError"
+          />
+          <div class="fortune-cookie-fallback" v-if="fortuneImageError"></div>
+        </div>
+        <div class="fortune-paper" v-if="isOpened">
+          <div class="fortune-content">
+            <div class="fortune-section-item">
+              <h3 class="fortune-label">설날 메시지</h3>
+              <p class="fortune-text">{{ fortuneData.new_year_message }}</p>
+            </div>
+            <div class="fortune-section-item">
+              <h3 class="fortune-label">책 추천</h3>
+              <p class="fortune-text">{{ fortuneData.book_recommendation }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p v-if="!isOpened" class="click-hint">포춘 쿠키를 클릭하세요!</p>
+      <button @click="goHome" class="reset-btn">다시 하기</button>
     </div>
 
     <div v-if="loading" class="loading">로딩 중...</div>
@@ -42,71 +153,190 @@ export default {
   name: 'Home',
   data() {
     return {
-      message: '',
-      showFortune: false,
+      currentStep: 'home', // 'home', 'input', 'baking', 'opening'
+      showHeader: false,
+      showMessage: false,
+      showButton: false,
+      cookieBasket: [],
+      newYearMessage: '',
+      bookRecommendation: '',
+      isBaking: false,
       isOpened: false,
-      fortuneMessage: '',
+      fortuneData: {
+        new_year_message: '',
+        book_recommendation: ''
+      },
+      currentMessageId: null,
       loading: false,
-      error: null
+      error: null,
+      imageError: false,
+      bakingImageError: false,
+      fortuneImageError: false,
+      isShaking: false
     }
   },
+    mounted() {
+      this.loadCookieCount()
+      // 헤더 애니메이션 시작
+      setTimeout(() => {
+        this.showHeader = true
+        setTimeout(() => {
+          this.showMessage = true
+          setTimeout(() => {
+            this.showButton = true
+          }, 500)
+        }, 500)
+      }, 500)
+    },
   methods: {
-    async submitMessage() {
-      if (!this.message.trim()) return
+    getCookiePosition(index) {
+      const total = this.cookieBasket.length
+      if (total === 0) return {}
       
-      this.loading = true
+      const angle = (index / total) * 2 * Math.PI
+      const radius = 70
+      const x = Math.cos(angle) * radius
+      const y = Math.sin(angle) * radius
+      const rotation = (angle * 180) / Math.PI
+      
+      // CSS 변수로 최종 위치 저장
+      return {
+        '--final-x': `${x}px`,
+        '--final-y': `${y}px`,
+        '--final-rotation': `${rotation}deg`,
+        '--animation-delay': `${index * 0.1}s`,
+        position: 'absolute',
+        left: '50%',
+        top: '50%',
+        transform: `translate(var(--final-x, 0px), var(--final-y, 0px)) rotate(var(--final-rotation, 0deg))`
+      }
+    },
+    async loadCookieCount() {
+      try {
+        const response = await axios.get(`${API_BASE_URL}/messages/count`)
+        const count = response.data.count
+        this.cookieBasket = Array(count).fill(null).map((_, i) => ({ id: i + 1 }))
+      } catch (err) {
+        console.error('쿠키 개수 로드 실패:', err)
+        this.cookieBasket = []
+      }
+    },
+    goToInput() {
+      this.currentStep = 'input'
+    },
+    goHome() {
+      this.currentStep = 'home'
+      this.showHeader = false
+      this.showMessage = false
+      this.showButton = false
+      this.isOpened = false
+      this.fortuneData = { new_year_message: '', book_recommendation: '' }
+      this.currentMessageId = null
+      this.newYearMessage = ''
+      this.bookRecommendation = ''
+      
+      setTimeout(() => {
+        this.showHeader = true
+        setTimeout(() => {
+          this.showMessage = true
+          setTimeout(() => {
+            this.showButton = true
+          }, 500)
+        }, 500)
+      }, 100)
+      
+      this.loadCookieCount()
+    },
+    async createFortuneCookie() {
+      if (!this.newYearMessage.trim() || !this.bookRecommendation.trim() || this.isBaking) return
+      
+      this.isBaking = true
       this.error = null
       
       try {
         await axios.post(`${API_BASE_URL}/messages`, {
-          message: this.message
+          new_year_message: this.newYearMessage,
+          book_recommendation: this.bookRecommendation
         })
-        this.message = ''
-        alert('메시지가 저장되었습니다!')
+        
+        // 오븐 애니메이션 시작
+        this.currentStep = 'baking'
+        this.isBaking = true
+        
+        // 3초 후 랜덤 쿠키 열기 화면으로 이동
+        setTimeout(async () => {
+          this.isBaking = false
+          await this.loadCookieCount()
+          // 랜덤 쿠키 가져오기
+          this.currentStep = 'opening'
+          this.isOpened = false
+          this.isShaking = false
+          await this.fetchRandomCookie()
+        }, 3000)
+        
       } catch (err) {
-        this.error = '메시지 전송에 실패했습니다.'
+        this.error = '포춘 쿠키 만들기에 실패했습니다.'
         console.error(err)
-      } finally {
-        this.loading = false
+        this.isBaking = false
       }
     },
-    async getFortune() {
+    handleImageError(event) {
+      this.imageError = true
+      if (event.target) {
+        event.target.style.display = 'none'
+      }
+    },
+    handleBakingImageError(event) {
+      this.bakingImageError = true
+      if (event.target) {
+        event.target.style.display = 'none'
+      }
+    },
+    handleFortuneImageError(event) {
+      this.fortuneImageError = true
+      if (event.target) {
+        event.target.style.display = 'none'
+      }
+    },
+    async shakeAndOpenCookie() {
+      if (this.isOpened) return
+      
+      // 흔들림 애니메이션 시작
+      this.isShaking = true
+      
+      // 흔들림 후 포춘 쿠키 열기
+      setTimeout(() => {
+        this.isShaking = false
+        this.isOpened = true
+      }, 600)
+    },
+    async fetchRandomCookie() {
       this.loading = true
       this.error = null
-      this.showFortune = true
-      this.isOpened = false
       
       try {
         const response = await axios.get(`${API_BASE_URL}/messages/random`)
-        this.fortuneMessage = response.data.message
+        this.fortuneData = {
+          new_year_message: response.data.new_year_message,
+          book_recommendation: response.data.book_recommendation
+        }
         this.currentMessageId = response.data.id
+        
+        // 메시지를 읽음으로 표시
+        if (this.currentMessageId) {
+          try {
+            await axios.patch(`${API_BASE_URL}/messages/${this.currentMessageId}/read`)
+          } catch (err) {
+            console.error('메시지 읽음 처리 실패:', err)
+          }
+        }
       } catch (err) {
         this.error = '포춘 쿠키를 가져오는데 실패했습니다.'
         console.error(err)
-        this.showFortune = false
+        this.currentStep = 'home'
       } finally {
         this.loading = false
       }
-    },
-    async openCookie() {
-      if (this.isOpened) return
-      
-      this.isOpened = true
-      
-      // 메시지를 읽음으로 표시
-      if (this.currentMessageId) {
-        try {
-          await axios.patch(`${API_BASE_URL}/messages/${this.currentMessageId}/read`)
-        } catch (err) {
-          console.error('메시지 읽음 처리 실패:', err)
-        }
-      }
-    },
-    reset() {
-      this.showFortune = false
-      this.isOpened = false
-      this.fortuneMessage = ''
-      this.currentMessageId = null
     }
   }
 }
@@ -115,22 +345,257 @@ export default {
 <style scoped>
 .home-container {
   width: 100%;
-  max-width: 500px;
+  max-width: 600px;
   text-align: center;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 20px;
 }
 
-.title {
+/* 첫 화면 */
+.home-screen {
+  width: 100%;
+}
+
+.plate-container {
+  position: relative;
+  width: 100%;
+  height: 350px;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+}
+
+.plate {
+  position: relative;
+  width: 280px;
+  height: 280px;
+  background: 
+    radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.1) 0%, transparent 60%),
+    linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+  border-radius: 50%;
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.2),
+    inset 0 5px 15px rgba(255, 255, 255, 0.8),
+    inset 0 -10px 30px rgba(0, 0, 0, 0.15),
+    inset 0 0 80px rgba(0, 0, 0, 0.08);
+  border: 3px solid #d4d4d4;
+  margin: 0 auto;
+  overflow: visible;
+}
+
+.plate::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60%;
+  height: 60%;
+  background: radial-gradient(circle, rgba(0, 0, 0, 0.12) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.plate::after {
+  content: '';
+  position: absolute;
+  top: 20%;
+  left: 20%;
+  width: 60%;
+  height: 60%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.4) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.cookie-on-plate {
+  width: 50px;
+  height: 50px;
+  opacity: 0;
+  transform-origin: center;
+  animation: cookieDrop 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  animation-delay: var(--animation-delay, 0s);
+}
+
+/* 애니메이션: 위에서 떨어지면서 회전하며 최종 위치로 이동 */
+@keyframes cookieDrop {
+  0% {
+    opacity: 0;
+    transform: translate(var(--final-x, 0px), calc(var(--final-y, 0px) - 250px)) rotate(0deg) scale(0.3);
+  }
+  60% {
+    opacity: 1;
+    transform: translate(var(--final-x, 0px), calc(var(--final-y, 0px) + 15px)) rotate(360deg) scale(1.15);
+  }
+  80% {
+    transform: translate(var(--final-x, 0px), calc(var(--final-y, 0px) - 5px)) rotate(360deg) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(var(--final-x, 0px), var(--final-y, 0px)) rotate(var(--final-rotation, 0deg)) scale(1);
+  }
+}
+
+.cookie-image-wrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.cookie-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.2));
+}
+
+.cookie-fallback {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #d4a574 0%, #c49460 100%);
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  position: relative;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+}
+
+.cookie-fallback::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 20%;
+  width: 60%;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 2px;
+  transform: translateY(-50%);
+}
+
+.cookie-fallback::after {
+  content: '';
+  position: absolute;
+  top: 45%;
+  left: 15%;
+  width: 70%;
+  height: 1px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 1px;
+  transform: translateY(-50%);
+}
+
+.header-title {
   color: white;
-  font-size: 2.5rem;
+  font-size: 1.8rem;
+  font-weight: bold;
   margin-bottom: 2rem;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
 }
 
+.header-title.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.subtitle {
+  font-size: 1.4rem;
+  display: block;
+  margin-top: 0.5rem;
+}
+
+.header-message {
+  color: white;
+  font-size: 1rem;
+  line-height: 1.6;
+  margin: 1.5rem auto 2rem;
+  max-width: 500px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.header-message.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.create-cookie-btn {
+  padding: 1.2rem 2.5rem;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 30px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+  touch-action: manipulation;
+  background: linear-gradient(135deg, #ff4500 0%, #ff6b35 50%, #ff8c42 100%);
+  color: white;
+  box-shadow: 
+    0 8px 25px rgba(255, 69, 0, 0.6),
+    0 0 20px rgba(255, 140, 66, 0.4),
+    inset 0 2px 5px rgba(255, 255, 255, 0.2);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s ease, transform 0.8s ease, background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.create-cookie-btn.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.create-cookie-btn:hover {
+  background: linear-gradient(135deg, #ff5500 0%, #ff7b45 50%, #ff9c52 100%);
+  box-shadow: 
+    0 10px 30px rgba(255, 69, 0, 0.7),
+    0 0 25px rgba(255, 140, 66, 0.5),
+    inset 0 2px 5px rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.create-cookie-btn:active {
+  background: linear-gradient(135deg, #ff3500 0%, #ff5b25 50%, #ff7c32 100%);
+  transform: translateY(0) scale(0.98);
+  box-shadow: 
+    0 4px 15px rgba(255, 69, 0, 0.5),
+    0 0 15px rgba(255, 140, 66, 0.3),
+    inset 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* 입력 섹션 */
 .input-section {
   background: white;
   padding: 2rem;
   border-radius: 20px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  width: 100%;
+}
+
+.input-title {
+  font-size: 1.8rem;
+  color: #333;
+  margin-bottom: 2rem;
+}
+
+.input-group {
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.input-label {
+  display: block;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 0.5rem;
 }
 
 .message-input {
@@ -141,52 +606,339 @@ export default {
   font-size: 1rem;
   font-family: inherit;
   resize: none;
-  margin-bottom: 1rem;
   transition: border-color 0.3s;
 }
 
 .message-input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #ff8c42;
 }
 
-.submit-btn, .fortune-btn {
+.create-btn {
   width: 100%;
   padding: 1rem;
-  margin: 0.5rem 0;
-  border: none;
+  margin-bottom: 0.5rem;
+  border: 2px solid rgba(255, 255, 255, 0.3);
   border-radius: 10px;
   font-size: 1.1rem;
   font-weight: bold;
   cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: all 0.3s;
   touch-action: manipulation;
-}
-
-.submit-btn {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #ff4500 0%, #ff6b35 50%, #ff8c42 100%);
   color: white;
+  box-shadow: 
+    0 6px 20px rgba(255, 69, 0, 0.5),
+    0 0 15px rgba(255, 140, 66, 0.3),
+    inset 0 2px 4px rgba(255, 255, 255, 0.2);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-.fortune-btn {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-  color: white;
+.create-btn:hover {
+  background: linear-gradient(135deg, #ff5500 0%, #ff7b45 50%, #ff9c52 100%);
+  box-shadow: 
+    0 8px 25px rgba(255, 69, 0, 0.6),
+    0 0 20px rgba(255, 140, 66, 0.4),
+    inset 0 2px 4px rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
 }
 
-.submit-btn:active, .fortune-btn:active {
+.create-btn:active {
+  background: linear-gradient(135deg, #ff3500 0%, #ff5b25 50%, #ff7c32 100%);
   transform: scale(0.98);
+  box-shadow: 
+    0 3px 10px rgba(255, 69, 0, 0.4),
+    0 0 10px rgba(255, 140, 66, 0.2),
+    inset 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-.submit-btn:disabled {
+.create-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
+.back-btn {
+  width: 100%;
+  padding: 0.8rem;
+  border: 2px solid #ff8c42;
+  background: white;
+  color: #ff8c42;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+  touch-action: manipulation;
+}
+
+.back-btn:active {
+  background: #ff8c42;
+  color: white;
+  transform: scale(0.95);
+}
+
+/* 오븐 애니메이션 */
+.baking-section {
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.oven {
+  width: 300px;
+  height: 250px;
+  background: linear-gradient(135deg, #8b7355 0%, #6b5d4f 100%);
+  border-radius: 15px;
+  position: relative;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  margin-bottom: 2rem;
+}
+
+.oven-door {
+  width: 100%;
+  height: 80%;
+  background: linear-gradient(135deg, #9d8b6f 0%, #7a6a56 100%);
+  border-radius: 15px 15px 0 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.oven-window {
+  width: 200px;
+  height: 150px;
+  background: rgba(0, 0, 0, 0.8);
+  border: 8px solid #5a4a3a;
+  border-radius: 10px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flame {
+  position: absolute;
+  width: 25px;
+  height: 40px;
+  background: linear-gradient(to top, 
+    #ff0000 0%, 
+    #ff6b00 20%, 
+    #ffaa00 40%, 
+    #ffff00 60%, 
+    #ffaa00 80%, 
+    #ff6b00 100%
+  );
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  animation: flicker 0.4s infinite alternate;
+  box-shadow: 
+    0 0 10px rgba(255, 107, 0, 0.8),
+    0 0 20px rgba(255, 170, 0, 0.6),
+    inset 0 -5px 10px rgba(255, 0, 0, 0.3);
+  filter: blur(0.5px);
+}
+
+.flame::before {
+  content: '';
+  position: absolute;
+  top: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 15px;
+  height: 20px;
+  background: linear-gradient(to top, #ffff00 0%, #ffaa00 100%);
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  opacity: 0.8;
+  animation: flickerInner 0.3s infinite alternate;
+}
+
+.flame::after {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30px;
+  height: 8px;
+  background: radial-gradient(ellipse, rgba(255, 170, 0, 0.6) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+.flame1 {
+  bottom: 15px;
+  left: 25%;
+  animation-delay: 0s;
+}
+
+.flame2 {
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30px;
+  height: 45px;
+  animation-delay: 0.15s;
+}
+
+.flame3 {
+  bottom: 15px;
+  right: 25%;
+  animation-delay: 0.3s;
+}
+
+@keyframes flicker {
+  0% {
+    transform: scaleY(1) scaleX(1) translateY(0);
+    opacity: 1;
+  }
+  50% {
+    transform: scaleY(1.15) scaleX(0.95) translateY(-2px);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scaleY(1.3) scaleX(0.9) translateY(-4px);
+    opacity: 0.85;
+  }
+}
+
+@keyframes flickerInner {
+  0% {
+    transform: translateX(-50%) scaleY(1) scaleX(1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateX(-50%) scaleY(1.2) scaleX(0.9);
+    opacity: 1;
+  }
+}
+
+.cookie-in-oven {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+}
+
+.cookie-baking {
+  width: 70px;
+  height: 70px;
+  position: relative;
+  animation: baking 1.2s infinite;
+}
+
+.cookie-baking-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 0 15px rgba(255, 170, 0, 0.8)) brightness(1.1);
+  animation: bakingRotate 1.2s infinite;
+}
+
+.cookie-baking-fallback {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #d4a574 0%, #c49460 100%);
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  position: relative;
+  box-shadow: 
+    0 0 20px rgba(255, 170, 0, 0.6),
+    0 0 40px rgba(255, 107, 0, 0.4);
+  animation: bakingRotate 1.2s infinite;
+}
+
+.cookie-baking-fallback::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 20%;
+  width: 60%;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 2px;
+  transform: translateY(-50%);
+}
+
+@keyframes baking {
+  0%, 100% {
+    transform: scale(1) translateY(0);
+  }
+  25% {
+    transform: scale(1.05) translateY(-3px);
+  }
+  50% {
+    transform: scale(1.1) translateY(-5px);
+  }
+  75% {
+    transform: scale(1.05) translateY(-3px);
+  }
+}
+
+@keyframes bakingRotate {
+  0%, 100% {
+    transform: rotate(0deg);
+    filter: drop-shadow(0 0 15px rgba(255, 170, 0, 0.8)) brightness(1.1);
+  }
+  25% {
+    transform: rotate(5deg);
+    filter: drop-shadow(0 0 20px rgba(255, 170, 0, 1)) brightness(1.15);
+  }
+  50% {
+    transform: rotate(0deg);
+    filter: drop-shadow(0 0 25px rgba(255, 107, 0, 0.9)) brightness(1.2);
+  }
+  75% {
+    transform: rotate(-5deg);
+    filter: drop-shadow(0 0 20px rgba(255, 170, 0, 1)) brightness(1.15);
+  }
+}
+
+.oven-controls {
+  height: 20%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.oven-knob {
+  width: 30px;
+  height: 30px;
+  background: linear-gradient(135deg, #c0c0c0 0%, #808080 100%);
+  border-radius: 50%;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.baking-text {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #333;
+  margin-top: 1rem;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+/* 포춘 쿠키 열기 섹션 */
 .fortune-section {
   background: white;
   padding: 2rem;
   border-radius: 20px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  width: 100%;
 }
 
 .fortune-cookie {
@@ -196,32 +948,80 @@ export default {
   margin: 2rem auto;
   cursor: pointer;
   touch-action: manipulation;
+  transition: transform 0.3s ease;
 }
 
-.cookie-top, .cookie-bottom {
-  position: absolute;
+.fortune-cookie:hover {
+  transform: scale(1.05);
+}
+
+.fortune-cookie.shaking {
+  animation: shake 0.6s ease-in-out;
+}
+
+.cookie-image-container {
   width: 100%;
-  height: 50%;
-  background: linear-gradient(135deg, #d4a574 0%, #c49460 100%);
-  border-radius: 50%;
+  height: 100%;
+  position: relative;
   transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.fortune-cookie.opened .cookie-image-container {
+  transform: scale(0) rotate(360deg);
+  opacity: 0;
+}
+
+.fortune-cookie-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.3));
+  transition: transform 0.3s ease;
+}
+
+.fortune-cookie-fallback {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #d4a574 0%, #c49460 100%);
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  position: relative;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
-.cookie-top {
-  top: 0;
-  z-index: 2;
-  transform-origin: bottom center;
+.fortune-cookie-fallback::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 20%;
+  width: 60%;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 2px;
+  transform: translateY(-50%);
 }
 
-.cookie-bottom {
-  bottom: 0;
-  z-index: 1;
+.fortune-cookie-fallback::after {
+  content: '';
+  position: absolute;
+  top: 45%;
+  left: 15%;
+  width: 70%;
+  height: 1px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 1px;
+  transform: translateY(-50%);
 }
 
-.fortune-cookie.opened .cookie-top {
-  transform: rotateX(180deg) translateY(-20px);
-  opacity: 0;
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0) rotate(0deg);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translateX(-8px) rotate(-5deg);
+  }
+  20%, 40%, 60%, 80% {
+    transform: translateX(8px) rotate(5deg);
+  }
 }
 
 .fortune-paper {
@@ -229,8 +1029,8 @@ export default {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%) scale(0);
-  width: 180px;
-  min-height: 120px;
+  width: 280px;
+  min-height: 200px;
   background: #fff8e1;
   border: 2px solid #ffd54f;
   border-radius: 10px;
@@ -258,20 +1058,57 @@ export default {
   }
 }
 
+.fortune-content {
+  text-align: left;
+}
+
+.fortune-section-item {
+  margin-bottom: 1.5rem;
+}
+
+.fortune-section-item:last-child {
+  margin-bottom: 0;
+}
+
+.fortune-label {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #d4a574;
+  margin-bottom: 0.5rem;
+  border-bottom: 2px solid #ffd54f;
+  padding-bottom: 0.3rem;
+}
+
 .fortune-text {
-  font-size: 1.1rem;
-  line-height: 1.6;
+  font-size: 1rem;
+  line-height: 1.8;
   color: #333;
-  font-weight: 500;
   word-break: keep-all;
+}
+
+.click-hint {
+  margin-top: 1rem;
+  color: #666;
+  font-size: 0.9rem;
+  font-style: italic;
+  animation: fadeInOut 2s infinite;
+}
+
+@keyframes fadeInOut {
+  0%, 100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
 }
 
 .reset-btn {
   margin-top: 1.5rem;
   padding: 0.8rem 2rem;
-  border: 2px solid #667eea;
+  border: 2px solid #ff8c42;
   background: white;
-  color: #667eea;
+  color: #ff8c42;
   border-radius: 25px;
   font-size: 1rem;
   font-weight: bold;
@@ -281,7 +1118,7 @@ export default {
 }
 
 .reset-btn:active {
-  background: #667eea;
+  background: #ff8c42;
   color: white;
   transform: scale(0.95);
 }
@@ -295,7 +1132,7 @@ export default {
 
 .loading {
   background: rgba(255, 255, 255, 0.9);
-  color: #667eea;
+  color: #ff8c42;
 }
 
 .error {
@@ -305,44 +1142,72 @@ export default {
 
 /* 모바일 반응형 */
 @media (max-width: 600px) {
-  .title {
-    font-size: 2rem;
-    margin-bottom: 1.5rem;
+  .header-title {
+    font-size: 1.4rem;
   }
 
-  .input-section, .fortune-section {
+  .subtitle {
+    font-size: 1.1rem;
+  }
+
+  .header-message {
+    font-size: 0.9rem;
+    margin: 1rem auto 1.5rem;
+    padding: 0 1rem;
+  }
+
+  .plate {
+    width: 240px;
+    height: 240px;
+  }
+
+  .cookie-on-plate {
+    width: 45px;
+    height: 45px;
+  }
+
+  .input-section, .baking-section, .fortune-section {
     padding: 1.5rem;
   }
 
-  .fortune-cookie {
-    width: 180px;
-    height: 180px;
+  .oven {
+    width: 250px;
+    height: 200px;
+  }
+
+  .oven-window {
+    width: 160px;
+    height: 120px;
   }
 
   .fortune-paper {
-    width: 160px;
+    width: 240px;
     padding: 1rem;
-  }
-
-  .fortune-text {
-    font-size: 1rem;
   }
 }
 
 @media (max-width: 400px) {
-  .title {
-    font-size: 1.5rem;
+  .header-title {
+    font-size: 1.2rem;
   }
 
-  .fortune-cookie {
-    width: 150px;
-    height: 150px;
+  .subtitle {
+    font-size: 1rem;
+  }
+
+  .plate {
+    width: 200px;
+    height: 200px;
+  }
+
+  .cookie-on-plate {
+    width: 35px;
+    height: 35px;
   }
 
   .fortune-paper {
-    width: 140px;
+    width: 200px;
     padding: 0.8rem;
   }
 }
 </style>
-
