@@ -90,8 +90,11 @@ def get_random_message(
                 read_at=None
             )
             return default_message
+        
+        # 모든 메시지를 읽었다면 랜덤으로 럭키 메시지 반환
+        print("[DEBUG] 모든 메시지를 읽었으므로 랜덤 럭키 메시지 반환")
         selected_message = random.choice(available_messages)
-        print(f"[DEBUG] 데이터베이스에서 전체 사용 가능한 메시지 선택: id={selected_message.id}")
+        print(f"[DEBUG] 데이터베이스에서 랜덤 럭키 메시지 선택: id={selected_message.id}")
     
     return selected_message
 

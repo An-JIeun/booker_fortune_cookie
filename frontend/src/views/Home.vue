@@ -128,6 +128,9 @@
             <div v-if="currentMessageId === 0" class="default-message-header">
               <p class="default-header-text">첫 쿠키입니다🍀 운영자의 쿠키를 드리도록 하겠습니다🥠</p>
             </div>
+            <div v-if="isLuckyMessage && currentMessageId !== 0" class="lucky-message-header">
+              <p class="lucky-header-text">🎉 럭키 메시지! 🎉<br>모든 쿠키를 읽으셨네요! 랜덤으로 선택된 특별한 메시지입니다🥠</p>
+            </div>
             <div class="fortune-section-item">
               <h3 class="fortune-label">설날 메시지</h3>
               <p class="fortune-text">{{ fortuneData.new_year_message }}</p>
@@ -178,6 +181,7 @@ export default {
       fortuneImageError: false,
       isShaking: false,
       createdMessageId: null, // 방금 생성한 메시지 ID (자기 자신이 작성한 메시지 제외용)
+      isLuckyMessage: false, // 모든 쿠키를 읽었을 때 나오는 럭키 메시지 여부
     }
   },
   mounted() {
@@ -254,6 +258,7 @@ export default {
       this.newYearMessage = ''
       this.bookRecommendation = ''
       this.createdMessageId = null // 초기화
+      this.isLuckyMessage = false // 초기화
       
       setTimeout(() => {
         this.showHeader = true
@@ -366,9 +371,12 @@ export default {
           book_recommendation: response.data.book_recommendation
         }
         this.currentMessageId = response.data.id
+        this.isLuckyMessage = response.data.is_read || false // 이미 읽은 메시지면 럭키 메시지
         
         if (this.currentMessageId === 0) {
           console.warn('⚠️ 운영자 메시지가 반환되었습니다. 데이터베이스에 메시지가 없거나 모든 메시지가 제외되었을 수 있습니다.')
+        } else if (this.isLuckyMessage) {
+          console.log('🎉 럭키 메시지입니다! 모든 쿠키를 읽어서 랜덤으로 선택된 메시지입니다.')
         }
         
         // 운영자 메시지(id=0)가 아닌 경우에만 읽음 처리
@@ -515,18 +523,21 @@ export default {
   border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
   position: relative;
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  line-height: 1;
 }
 
 .cookie-fallback::before {
-  content: '';
+  content: '🥠';
   position: absolute;
   top: 50%;
-  left: 20%;
-  width: 60%;
-  height: 2px;
-  background: rgba(255, 255, 255, 0.3);
-  border-radius: 2px;
-  transform: translateY(-50%);
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 30px;
+  line-height: 1;
 }
 
 .cookie-fallback::after {
@@ -543,7 +554,7 @@ export default {
 
 .header-title {
   color: white;
-  font-size: 1.8rem;
+  font-size: 1.5rem;
   font-weight: bold;
   margin-bottom: 2rem;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
@@ -558,9 +569,10 @@ export default {
 }
 
 .subtitle {
-  font-size: 1.4rem;
+  font-size: 2rem;
   display: block;
   margin-top: 0.5rem;
+  font-weight: bold;
 }
 
 .header-message {
@@ -905,18 +917,19 @@ export default {
     0 0 20px rgba(255, 170, 0, 0.6),
     0 0 40px rgba(255, 107, 0, 0.4);
   animation: bakingRotate 1.2s infinite;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .cookie-baking-fallback::before {
-  content: '';
+  content: '🥠';
   position: absolute;
   top: 50%;
-  left: 20%;
-  width: 60%;
-  height: 2px;
-  background: rgba(255, 255, 255, 0.3);
-  border-radius: 2px;
-  transform: translateY(-50%);
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 60px;
+  line-height: 1;
 }
 
 @keyframes baking {
@@ -1040,18 +1053,19 @@ export default {
   border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
   position: relative;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .fortune-cookie-fallback::before {
-  content: '';
+  content: '🥠';
   position: absolute;
   top: 50%;
-  left: 20%;
-  width: 60%;
-  height: 2px;
-  background: rgba(255, 255, 255, 0.3);
-  border-radius: 2px;
-  transform: translateY(-50%);
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 80px;
+  line-height: 1;
 }
 
 .fortune-cookie-fallback::after {
@@ -1172,6 +1186,35 @@ export default {
   line-height: 1.6;
 }
 
+.lucky-message-header {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, #fff8e1 0%, #ffe082 100%);
+  border-radius: 10px;
+  border: 2px solid #ffd54f;
+  text-align: center;
+  animation: luckyPulse 2s ease-in-out infinite;
+}
+
+.lucky-header-text {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #ff6b35;
+  margin: 0;
+  line-height: 1.6;
+}
+
+@keyframes luckyPulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(255, 140, 66, 0.7);
+  }
+  50% {
+    transform: scale(1.02);
+    box-shadow: 0 0 0 10px rgba(255, 140, 66, 0);
+  }
+}
+
 .fortune-section-item {
   margin-bottom: 1.5rem;
 }
@@ -1253,11 +1296,11 @@ export default {
 /* 모바일 반응형 */
 @media (max-width: 600px) {
   .header-title {
-    font-size: 1.4rem;
+    font-size: 1.2rem;
   }
 
   .subtitle {
-    font-size: 1.1rem;
+    font-size: 1.6rem;
   }
 
   .header-message {
@@ -1298,11 +1341,11 @@ export default {
 
 @media (max-width: 400px) {
   .header-title {
-    font-size: 1.2rem;
+    font-size: 1rem;
   }
 
   .subtitle {
-    font-size: 1rem;
+    font-size: 1.4rem;
   }
 
   .plate {
