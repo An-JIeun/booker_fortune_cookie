@@ -544,8 +544,6 @@ export default {
   width: 100%;
   height: 100%;
   background: 
-    /* 중앙 압착 부분의 어두운 그림자 (U자 구조 - 접힌 중심에 내부로 힘) */
-    radial-gradient(ellipse at 50% 72%, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.2) 12%, transparent 25%),
     /* 반 접힌 부분의 하이라이트 (지름을 따라 접힘) */
     radial-gradient(ellipse at 50% 45%, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0.25) 18%, transparent 38%),
     /* 좌우 측면 명암 (양측 대칭) */
@@ -555,82 +553,44 @@ export default {
       transparent 88%,
       rgba(0, 0, 0, 0.12) 100%
     ),
-    /* 기본 색상 그라데이션 */
-    linear-gradient(135deg, #f4c88a 0%, #d4a574 30%, #c49460 70%, #b8864a 100%);
+    /* 기본 색상 그라데이션 (더 진하게) */
+    linear-gradient(135deg, #d4a574 0%, #b8864a 30%, #a6753a 70%, #8b5a2a 100%);
   /* 원형 → 반 접힘 형태 (지름을 따라) */
   border-radius: 50% 50% 50% 50% / 45% 45% 55% 55%;
-  /* 원형 전체 표시, 아래쪽 중앙 일부 각도만 투명하게 처리 (약 15도, 172.5도~187.5도) */
+  /* 원형 전체 표시, 아래쪽 중앙 일부 각도만 투명하게 처리 (약 30도, 165도~195도) */
   position: relative;
   mask-image: conic-gradient(
-    from 172.5deg at 50% 50%,
+    from 165deg at 50% 50%,
     black 0deg,
-    black 172.5deg,
-    transparent 172.5deg,
-    transparent 187.5deg,
-    black 187.5deg,
+    black 165deg,
+    transparent 165deg,
+    transparent 195deg,
+    black 195deg,
     black 360deg
   );
   -webkit-mask-image: conic-gradient(
-    from 172.5deg at 50% 50%,
+    from 165deg at 50% 50%,
     black 0deg,
-    black 172.5deg,
-    transparent 172.5deg,
-    transparent 187.5deg,
-    black 187.5deg,
+    black 165deg,
+    transparent 165deg,
+    transparent 195deg,
+    black 195deg,
     black 360deg
   );
   box-shadow: 
     /* 외부 그림자 */
     0 3px 8px rgba(0, 0, 0, 0.3),
     /* 위쪽 반 접힌 부분의 하이라이트 */
-    inset 0 3px 6px rgba(255, 255, 255, 0.4),
-    /* 중앙 압착 부분의 그림자 (접힌 중심에 내부로 힘) */
-    inset 0 7px 18px rgba(0, 0, 0, 0.35);
+    inset 0 3px 6px rgba(255, 255, 255, 0.4);
   overflow: visible;
 }
 
 .cookie-fallback::before {
-  content: '';
-  position: absolute;
-  top: 78%;
-  left: 10%;
-  width: 80%;
-  height: 3px;
-  /* 아래쪽 열린 부분의 가장자리 (투명한 공간의 경계) */
-  background: linear-gradient(to right, 
-    transparent 0%,
-    rgba(0, 0, 0, 0.3) 5%,
-    rgba(0, 0, 0, 0.4) 15%,
-    rgba(0, 0, 0, 0.5) 25%,
-    rgba(0, 0, 0, 0.55) 50%,
-    rgba(0, 0, 0, 0.5) 75%,
-    rgba(0, 0, 0, 0.4) 85%,
-    rgba(0, 0, 0, 0.3) 95%,
-    transparent 100%
-  );
-  border-radius: 2px;
-  transform: translateY(-50%);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  display: none;
 }
 
 .cookie-fallback::after {
-  content: '';
-  position: absolute;
-  top: 45%;
-  left: 20%;
-  width: 60%;
-  height: 2px;
-  /* 반 접힌 부분의 하이라이트 */
-  background: linear-gradient(to right, 
-    transparent 0%,
-    rgba(255, 255, 255, 0.5) 20%,
-    rgba(255, 255, 255, 0.6) 50%,
-    rgba(255, 255, 255, 0.5) 80%,
-    transparent 100%
-  );
-  border-radius: 1px;
-  transform: translateY(-50%);
-  box-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
+  display: none;
 }
 
 .header-title {
@@ -1003,28 +963,28 @@ export default {
       transparent 88%,
       rgba(0, 0, 0, 0.14) 100%
     ),
-    /* 기본 색상 그라데이션 */
-    linear-gradient(135deg, #f4c88a 0%, #d4a574 30%, #c49460 70%, #b8864a 100%);
+    /* 기본 색상 그라데이션 (더 진하게) */
+    linear-gradient(135deg, #d4a574 0%, #b8864a 30%, #a6753a 70%, #8b5a2a 100%);
   /* 원형 → 반 접힘 형태 (지름을 따라) */
   border-radius: 50% 50% 50% 50% / 45% 45% 55% 55%;
-  /* 원형 전체 표시, 아래쪽 중앙 일부 각도만 투명하게 처리 (약 15도, 172.5도~187.5도) */
+  /* 원형 전체 표시, 아래쪽 중앙 일부 각도만 투명하게 처리 (약 30도, 165도~195도) */
   position: relative;
   mask-image: conic-gradient(
-    from 172.5deg at 50% 50%,
+    from 165deg at 50% 50%,
     black 0deg,
-    black 172.5deg,
-    transparent 172.5deg,
-    transparent 187.5deg,
-    black 187.5deg,
+    black 165deg,
+    transparent 165deg,
+    transparent 195deg,
+    black 195deg,
     black 360deg
   );
   -webkit-mask-image: conic-gradient(
-    from 172.5deg at 50% 50%,
+    from 165deg at 50% 50%,
     black 0deg,
-    black 172.5deg,
-    transparent 172.5deg,
-    transparent 187.5deg,
-    black 187.5deg,
+    black 165deg,
+    transparent 165deg,
+    transparent 195deg,
+    black 195deg,
     black 360deg
   );
   box-shadow: 
@@ -1194,28 +1154,28 @@ export default {
       transparent 88%,
       rgba(0, 0, 0, 0.13) 100%
     ),
-    /* 기본 색상 그라데이션 */
-    linear-gradient(135deg, #f4c88a 0%, #d4a574 30%, #c49460 70%, #b8864a 100%);
+    /* 기본 색상 그라데이션 (더 진하게) */
+    linear-gradient(135deg, #d4a574 0%, #b8864a 30%, #a6753a 70%, #8b5a2a 100%);
   /* 원형 → 반 접힘 형태 (지름을 따라) */
   border-radius: 50% 50% 50% 50% / 45% 45% 55% 55%;
-  /* 원형 전체 표시, 아래쪽 중앙 일부 각도만 투명하게 처리 (약 15도, 172.5도~187.5도) */
+  /* 원형 전체 표시, 아래쪽 중앙 일부 각도만 투명하게 처리 (약 30도, 165도~195도) */
   position: relative;
   mask-image: conic-gradient(
-    from 172.5deg at 50% 50%,
+    from 165deg at 50% 50%,
     black 0deg,
-    black 172.5deg,
-    transparent 172.5deg,
-    transparent 187.5deg,
-    black 187.5deg,
+    black 165deg,
+    transparent 165deg,
+    transparent 195deg,
+    black 195deg,
     black 360deg
   );
   -webkit-mask-image: conic-gradient(
-    from 172.5deg at 50% 50%,
+    from 165deg at 50% 50%,
     black 0deg,
-    black 172.5deg,
-    transparent 172.5deg,
-    transparent 187.5deg,
-    black 187.5deg,
+    black 165deg,
+    transparent 165deg,
+    transparent 195deg,
+    black 195deg,
     black 360deg
   );
   box-shadow: 
