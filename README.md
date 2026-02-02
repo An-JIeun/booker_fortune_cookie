@@ -61,12 +61,15 @@ npm run dev
 2. GitHub 저장소 연결 (자동 배포 활성화)
 3. 다음 설정을 적용:
    - **Environment**: Python 3
+   - **Python Version**: 3.11.0 (중요: runtime.txt 파일 참조)
    - **Build Command**: `cd backend && pip install -r requirements.txt`
    - **Start Command**: `cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT`
    - **Root Directory**: (비워두기 - 프로젝트 루트 사용)
 4. 환경 변수 설정:
    - `DATABASE_URL`: PostgreSQL 데이터베이스 URL (Render에서 자동 생성 가능)
    - `ENVIRONMENT`: `production` (선택사항)
+
+**참고**: `uvicorn[standard]` 대신 `uvicorn`만 사용하여 maturin 빌드 오류를 방지했습니다.
 
 ## API 엔드포인트
 
