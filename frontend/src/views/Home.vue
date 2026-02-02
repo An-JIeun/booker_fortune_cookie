@@ -559,21 +559,26 @@ export default {
     linear-gradient(135deg, #f4c88a 0%, #d4a574 30%, #c49460 70%, #b8864a 100%);
   /* 원형 → 반 접힘 형태 (지름을 따라) */
   border-radius: 50% 50% 50% 50% / 45% 45% 55% 55%;
-  /* 원형 전체가 보이되, 아래쪽 중앙 일부만 투명하게 처리 (약 10도, 175도~185도) */
-  clip-path: polygon(
-    0% 0%,
-    100% 0%,
-    100% 100%,
-    99.5% 100%,
-    99% 99.5%,
-    98% 99%,
-    50% 97%,
-    2% 99%,
-    1% 99.5%,
-    0.5% 100%,
-    0% 100%
-  );
+  /* 원형 전체 표시, 아래쪽 중앙 일부 각도만 투명하게 처리 (약 15도, 172.5도~187.5도) */
   position: relative;
+  mask-image: conic-gradient(
+    from 172.5deg at 50% 50%,
+    black 0deg,
+    black 172.5deg,
+    transparent 172.5deg,
+    transparent 187.5deg,
+    black 187.5deg,
+    black 360deg
+  );
+  -webkit-mask-image: conic-gradient(
+    from 172.5deg at 50% 50%,
+    black 0deg,
+    black 172.5deg,
+    transparent 172.5deg,
+    transparent 187.5deg,
+    black 187.5deg,
+    black 360deg
+  );
   box-shadow: 
     /* 외부 그림자 */
     0 3px 8px rgba(0, 0, 0, 0.3),
@@ -1002,21 +1007,26 @@ export default {
     linear-gradient(135deg, #f4c88a 0%, #d4a574 30%, #c49460 70%, #b8864a 100%);
   /* 원형 → 반 접힘 형태 (지름을 따라) */
   border-radius: 50% 50% 50% 50% / 45% 45% 55% 55%;
-  /* 원형 전체가 보이되, 아래쪽 중앙 일부만 투명하게 처리 (약 10도, 175도~185도) */
-  clip-path: polygon(
-    0% 0%,
-    100% 0%,
-    100% 100%,
-    99.5% 100%,
-    99% 99.5%,
-    98% 99%,
-    50% 97%,
-    2% 99%,
-    1% 99.5%,
-    0.5% 100%,
-    0% 100%
-  );
+  /* 원형 전체 표시, 아래쪽 중앙 일부 각도만 투명하게 처리 (약 15도, 172.5도~187.5도) */
   position: relative;
+  mask-image: conic-gradient(
+    from 172.5deg at 50% 50%,
+    black 0deg,
+    black 172.5deg,
+    transparent 172.5deg,
+    transparent 187.5deg,
+    black 187.5deg,
+    black 360deg
+  );
+  -webkit-mask-image: conic-gradient(
+    from 172.5deg at 50% 50%,
+    black 0deg,
+    black 172.5deg,
+    transparent 172.5deg,
+    transparent 187.5deg,
+    black 187.5deg,
+    black 360deg
+  );
   box-shadow: 
     /* 오븐 빛 효과 */
     0 0 20px rgba(255, 170, 0, 0.6),
@@ -1188,21 +1198,26 @@ export default {
     linear-gradient(135deg, #f4c88a 0%, #d4a574 30%, #c49460 70%, #b8864a 100%);
   /* 원형 → 반 접힘 형태 (지름을 따라) */
   border-radius: 50% 50% 50% 50% / 45% 45% 55% 55%;
-  /* 원형 전체가 보이되, 아래쪽 중앙 일부만 투명하게 처리 (약 10도, 175도~185도) */
-  clip-path: polygon(
-    0% 0%,
-    100% 0%,
-    100% 100%,
-    99.5% 100%,
-    99% 99.5%,
-    98% 99%,
-    50% 97%,
-    2% 99%,
-    1% 99.5%,
-    0.5% 100%,
-    0% 100%
-  );
+  /* 원형 전체 표시, 아래쪽 중앙 일부 각도만 투명하게 처리 (약 15도, 172.5도~187.5도) */
   position: relative;
+  mask-image: conic-gradient(
+    from 172.5deg at 50% 50%,
+    black 0deg,
+    black 172.5deg,
+    transparent 172.5deg,
+    transparent 187.5deg,
+    black 187.5deg,
+    black 360deg
+  );
+  -webkit-mask-image: conic-gradient(
+    from 172.5deg at 50% 50%,
+    black 0deg,
+    black 172.5deg,
+    transparent 172.5deg,
+    transparent 187.5deg,
+    black 187.5deg,
+    black 360deg
+  );
   box-shadow: 
     /* 외부 그림자 */
     0 5px 15px rgba(0, 0, 0, 0.3),
