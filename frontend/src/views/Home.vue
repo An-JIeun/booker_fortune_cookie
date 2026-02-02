@@ -177,12 +177,10 @@ export default {
       bakingImageError: false,
       fortuneImageError: false,
       isShaking: false,
-      myMessageIds: [] // 자신이 작성한 메시지 ID 목록
     }
   },
   mounted() {
     this.loadCookieCount()
-    this.loadMyMessageIds()
     // 헤더 애니메이션 시작
     setTimeout(() => {
       this.showHeader = true
@@ -267,24 +265,6 @@ export default {
       
       this.loadCookieCount()
     },
-    loadMyMessageIds() {
-      // localStorage에서 자신이 작성한 메시지 ID 목록 불러오기
-      const stored = localStorage.getItem('myFortuneCookieIds')
-      if (stored) {
-        try {
-          this.myMessageIds = JSON.parse(stored)
-        } catch (e) {
-          this.myMessageIds = []
-        }
-      }
-    },
-    saveMyMessageId(messageId) {
-      // 자신이 작성한 메시지 ID 저장
-      if (!this.myMessageIds.includes(messageId)) {
-        this.myMessageIds.push(messageId)
-        localStorage.setItem('myFortuneCookieIds', JSON.stringify(this.myMessageIds))
-      }
-    },
     async createFortuneCookie() {
       if (!this.newYearMessage.trim() || !this.bookRecommendation.trim() || this.isBaking) return
       
@@ -299,10 +279,6 @@ export default {
         
         console.log('메시지 생성 응답:', response.data)
         console.log('생성된 메시지 ID:', response.data.id)
-        
-        // 자신이 작성한 메시지 ID 저장
-        this.saveMyMessageId(response.data.id)
-        console.log('저장된 내 메시지 ID 목록:', this.myMessageIds)
         
         // 오븐 애니메이션 시작
         this.currentStep = 'baking'
@@ -360,23 +336,10 @@ export default {
       this.error = null
       
       try {
-        // 자신이 작성한 메시지 ID 목록을 쿼리 파라미터로 전달
-        const excludeIds = this.myMessageIds.length > 0 
-          ? this.myMessageIds.join(',') 
-          : null
+        // 데이터베이스에서 직접 랜덤 메시지 가져오기 (로컬 조회 제외)
+        console.log('랜덤 쿠키 요청 (데이터베이스에서 직접 조회)')
         
-        const params = excludeIds ? { exclude_ids: excludeIds } : {}
-        // 캐시를 방지하기 위해 타임스탬프 추가
-        params._t = Date.now()
-        console.log('랜덤 쿠키 요청 (데이터베이스에서 조회):', { 
-          excludeIds, 
-          myMessageIds: this.myMessageIds,
-          params 
-        })
-        
-        // 데이터베이스에서 직접 랜덤 메시지 가져오기
         const response = await axios.get(`${API_BASE_URL}/messages/random`, { 
-          params,
           headers: {
             'Cache-Control': 'no-cache',
             'Pragma': 'no-cache'
