@@ -209,6 +209,29 @@ export default {
     }, 500)
   },
   methods: {
+    // localStorage에서 읽은 메시지 ID 목록 가져오기
+    getReadMessageIds() {
+      try {
+        const readIds = localStorage.getItem('readMessageIds')
+        return readIds ? JSON.parse(readIds) : []
+      } catch (err) {
+        console.error('읽은 메시지 ID 목록 가져오기 실패:', err)
+        return []
+      }
+    },
+    // localStorage에 읽은 메시지 ID 저장하기
+    saveReadMessageId(messageId) {
+      try {
+        const readIds = this.getReadMessageIds()
+        if (!readIds.includes(messageId)) {
+          readIds.push(messageId)
+          localStorage.setItem('readMessageIds', JSON.stringify(readIds))
+          console.log('읽은 메시지 ID 저장:', messageId)
+        }
+      } catch (err) {
+        console.error('읽은 메시지 ID 저장 실패:', err)
+      }
+    },
     getCookiePosition(index) {
       const total = this.cookieBasket.length
       if (total === 0) return {}
@@ -437,15 +460,30 @@ export default {
       this.error = null
       
       try {
-        // 자기 자신이 작성한 메시지 ID를 제외하기 위한 파라미터
-        const params = {}
+        // 제외할 메시지 ID 목록 구성 (자기 자신이 작성한 메시지 + 읽은 메시지)
+        const excludeIds = []
+        
+        // 자기 자신이 작성한 메시지 ID 추가
         if (this.createdMessageId) {
-          params.exclude_ids = this.createdMessageId.toString()
+          excludeIds.push(this.createdMessageId)
           console.log('자기 자신이 작성한 메시지 제외:', this.createdMessageId)
         }
         
-        // 데이터베이스에서 직접 랜덤 메시지 가져오기 (자기 자신이 작성한 메시지 제외)
-        console.log('랜덤 쿠키 요청 (데이터베이스에서 직접 조회):', params)
+        // 읽은 메시지 ID 목록 추가
+        const readMessageIds = this.getReadMessageIds()
+        if (readMessageIds.length > 0) {
+          excludeIds.push(...readMessageIds)
+          console.log('읽은 메시지 제외:', readMessageIds)
+        }
+        
+        // 파라미터 구성
+        const params = {}
+        if (excludeIds.length > 0) {
+          params.exclude_ids = excludeIds.join(',')
+        }
+        
+        // 데이터베이스에서 직접 랜덤 메시지 가져오기
+        console.log('랜덤 쿠키 요청:', params)
         
         const response = await axios.get(`${API_BASE_URL}/messages/random`, { 
           params,
@@ -462,20 +500,22 @@ export default {
           book_recommendation: response.data.book_recommendation
         }
         this.currentMessageId = response.data.id
-        this.isLuckyMessage = response.data.is_read || false // 이미 읽은 메시지면 럭키 메시지
         
-        if (this.currentMessageId === 0) {
-          console.warn('⚠️ 운영자 메시지가 반환되었습니다. 데이터베이스에 메시지가 없거나 모든 메시지가 제외되었을 수 있습니다.')
-        } else if (this.isLuckyMessage) {
-          console.log('🎉 럭키 메시지입니다! 모든 쿠키를 읽어서 랜덤으로 선택된 메시지입니다.')
-        }
-        
-        // 운영자 메시지(id=0)가 아닌 경우에만 읽음 처리
+        // 운영자 메시지(id=0)가 아닌 경우
         if (this.currentMessageId && this.currentMessageId !== 0) {
-          try {
-            await axios.patch(`${API_BASE_URL}/messages/${this.currentMessageId}/read`)
-          } catch (err) {
-            console.error('메시지 읽음 처리 실패:', err)
+          // 이미 읽은 메시지인지 확인 (럭키 메시지 판단)
+          this.isLuckyMessage = readMessageIds.includes(this.currentMessageId)
+          
+          // 읽은 메시지 목록에 저장 (프론트엔드에서만 관리)
+          this.saveReadMessageId(this.currentMessageId)
+          
+          if (this.isLuckyMessage) {
+            console.log('🎉 럭키 메시지입니다! 모든 쿠키를 읽어서 랜덤으로 선택된 메시지입니다.')
+          }
+        } else {
+          this.isLuckyMessage = false
+          if (this.currentMessageId === 0) {
+            console.warn('⚠️ 운영자 메시지가 반환되었습니다. 데이터베이스에 메시지가 없거나 모든 메시지가 제외되었을 수 있습니다.')
           }
         }
       } catch (err) {

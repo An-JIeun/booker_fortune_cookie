@@ -65,36 +65,27 @@ def get_random_message(
     if exclude_id_list:
         available_query = available_query.filter(~FortuneMessage.id.in_(exclude_id_list))
     
-    # 읽지 않은 메시지 우선 조회 (자기 자신이 작성한 메시지 제외)
-    unread_query = available_query.filter(FortuneMessage.is_read == False)
-    unread_messages = unread_query.all()
-    print(f"[DEBUG] 데이터베이스에서 읽지 않은 메시지 개수 (제외 후): {len(unread_messages)}")
+    # 사용 가능한 메시지 조회 (읽음 상태는 프론트엔드에서 관리)
+    available_messages = available_query.all()
+    print(f"[DEBUG] 사용 가능한 메시지 개수 (제외 후): {len(available_messages)}")
     
-    if unread_messages:
-        # 읽지 않은 메시지가 있으면 그 중에서 랜덤 선택
-        selected_message = random.choice(unread_messages)
-        print(f"[DEBUG] 데이터베이스에서 읽지 않은 메시지 선택: id={selected_message.id}")
-    else:
-        # 읽지 않은 메시지가 없으면 전체 사용 가능한 메시지에서 랜덤 선택
-        available_messages = available_query.all()
-        if not available_messages:
-            # 사용 가능한 메시지가 없으면 운영자 메시지 반환
-            print("[DEBUG] ⚠️ 사용 가능한 메시지가 없어서 운영자 메시지 반환")
-            from datetime import datetime
-            default_message = FortuneMessageResponse(
-                id=0,
-                new_year_message="올해도 꿈꾸시는 일 모두 이루시길 바랍니다! 2026년도 파이팅!!💪",
-                book_recommendation="너의 유토피아(정보라) - 저주토끼로 유명한 정보라 작가의 SF 단편소설집입니다. SF 소설 좋아하신다면 읽어보시길 바라요!!",
-                is_read=False,
-                created_at=datetime.utcnow(),
-                read_at=None
-            )
-            return default_message
-        
-        # 모든 메시지를 읽었다면 랜덤으로 럭키 메시지 반환
-        print("[DEBUG] 모든 메시지를 읽었으므로 랜덤 럭키 메시지 반환")
-        selected_message = random.choice(available_messages)
-        print(f"[DEBUG] 데이터베이스에서 랜덤 럭키 메시지 선택: id={selected_message.id}")
+    if not available_messages:
+        # 사용 가능한 메시지가 없으면 운영자 메시지 반환
+        print("[DEBUG] ⚠️ 사용 가능한 메시지가 없어서 운영자 메시지 반환")
+        from datetime import datetime
+        default_message = FortuneMessageResponse(
+            id=0,
+            new_year_message="올해도 꿈꾸시는 일 모두 이루시길 바랍니다! 2026년도 파이팅!!💪",
+            book_recommendation="너의 유토피아(정보라) - 저주토끼로 유명한 정보라 작가의 SF 단편소설집입니다. SF 소설 좋아하신다면 읽어보시길 바라요!!",
+            is_read=False,
+            created_at=datetime.utcnow(),
+            read_at=None
+        )
+        return default_message
+    
+    # 랜덤으로 메시지 선택
+    selected_message = random.choice(available_messages)
+    print(f"[DEBUG] 랜덤 메시지 선택: id={selected_message.id}")
     
     return selected_message
 
