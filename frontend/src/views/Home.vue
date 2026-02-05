@@ -425,6 +425,7 @@ export default {
   flex-direction: column;
   justify-content: center;
   padding: 20px;
+  font-family: 'Jua', sans-serif;
 }
 
 /* 첫 화면 */
@@ -602,6 +603,8 @@ export default {
   opacity: 0;
   transform: translateY(-20px);
   transition: opacity 0.8s ease, transform 0.8s ease;
+  line-height: 1.3;
+  font-family: 'Jua', sans-serif;
 }
 
 .header-title.show {
@@ -610,10 +613,28 @@ export default {
 }
 
 .subtitle {
-  font-size: 2rem;
-  display: block;
+  font-size: 2.8rem;
+  display: inline-block;
   margin-top: 0.5rem;
-  font-weight: bold;
+  padding: 1rem 2rem;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+  font-family: 'Bagel Fat One', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  background: linear-gradient(135deg, #ffb84d 0%, #ffa833 50%, #ff9f29 100%);
+  color: white;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 30px;
+  box-shadow: 
+    0 8px 25px rgba(255, 168, 51, 0.6),
+    0 0 20px rgba(255, 184, 77, 0.4),
+    inset 0 2px 5px rgba(255, 255, 255, 0.2);
+  white-space: nowrap;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .header-message {
@@ -642,16 +663,17 @@ export default {
   cursor: pointer;
   transition: all 0.3s;
   touch-action: manipulation;
-  background: linear-gradient(135deg, #ff4500 0%, #ff6b35 50%, #ff8c42 100%);
+  background: linear-gradient(135deg, #ff9f29 0%, #ff9520 50%, #ff8a17 100%);
   color: white;
-  box-shadow: 
-    0 8px 25px rgba(255, 69, 0, 0.6),
-    0 0 20px rgba(255, 140, 66, 0.4),
+    box-shadow: 
+    0 8px 25px rgba(255, 168, 51, 0.6),
+    0 0 20px rgba(255, 184, 77, 0.4),
     inset 0 2px 5px rgba(255, 255, 255, 0.2);
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
   opacity: 0;
   transform: translateY(20px);
   transition: opacity 0.8s ease, transform 0.8s ease, background 0.3s ease, box-shadow 0.3s ease;
+  font-family: 'Jua', sans-serif;
 }
 
 .create-cookie-btn.show {
@@ -660,20 +682,20 @@ export default {
 }
 
 .create-cookie-btn:hover {
-  background: linear-gradient(135deg, #ff5500 0%, #ff7b45 50%, #ff9c52 100%);
-  box-shadow: 
-    0 10px 30px rgba(255, 69, 0, 0.7),
-    0 0 25px rgba(255, 140, 66, 0.5),
+  background: linear-gradient(135deg, #ffa833 0%, #ff9f29 50%, #ff9520 100%);
+    box-shadow: 
+    0 10px 30px rgba(255, 168, 51, 0.7),
+    0 0 25px rgba(255, 184, 77, 0.5),
     inset 0 2px 5px rgba(255, 255, 255, 0.3);
   transform: translateY(-2px);
 }
 
 .create-cookie-btn:active {
-  background: linear-gradient(135deg, #ff3500 0%, #ff5b25 50%, #ff7c32 100%);
+  background: linear-gradient(135deg, #ff9f29 0%, #ff9520 50%, #ff8a17 100%);
   transform: translateY(0) scale(0.98);
-  box-shadow: 
-    0 4px 15px rgba(255, 69, 0, 0.5),
-    0 0 15px rgba(255, 140, 66, 0.3),
+    box-shadow: 
+    0 4px 15px rgba(255, 168, 51, 0.5),
+    0 0 15px rgba(255, 184, 77, 0.3),
     inset 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
@@ -718,7 +740,7 @@ export default {
 
 .message-input:focus {
   outline: none;
-  border-color: #ff8c42;
+    border-color: #ffa833;
 }
 
 .create-btn {
@@ -732,30 +754,31 @@ export default {
   cursor: pointer;
   transition: all 0.3s;
   touch-action: manipulation;
-  background: linear-gradient(135deg, #ff4500 0%, #ff6b35 50%, #ff8c42 100%);
+  background: linear-gradient(135deg, #ffb84d 0%, #ffa833 50%, #ff9f29 100%);
   color: white;
-  box-shadow: 
-    0 6px 20px rgba(255, 69, 0, 0.5),
-    0 0 15px rgba(255, 140, 66, 0.3),
+    box-shadow: 
+    0 6px 20px rgba(255, 168, 51, 0.5),
+    0 0 15px rgba(255, 184, 77, 0.3),
     inset 0 2px 4px rgba(255, 255, 255, 0.2);
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+  font-family: 'Jua', sans-serif;
 }
 
 .create-btn:hover {
-  background: linear-gradient(135deg, #ff5500 0%, #ff7b45 50%, #ff9c52 100%);
+  background: linear-gradient(135deg, #ffc259 0%, #ffb84d 50%, #ffad40 100%);
   box-shadow: 
-    0 8px 25px rgba(255, 69, 0, 0.6),
-    0 0 20px rgba(255, 140, 66, 0.4),
+    0 8px 25px rgba(255, 168, 51, 0.6),
+    0 0 20px rgba(255, 184, 77, 0.4),
     inset 0 2px 4px rgba(255, 255, 255, 0.3);
   transform: translateY(-2px);
 }
 
 .create-btn:active {
-  background: linear-gradient(135deg, #ff3500 0%, #ff5b25 50%, #ff7c32 100%);
+  background: linear-gradient(135deg, #ff9f29 0%, #ff9520 50%, #ff8a17 100%);
   transform: scale(0.98);
-  box-shadow: 
-    0 3px 10px rgba(255, 69, 0, 0.4),
-    0 0 10px rgba(255, 140, 66, 0.2),
+    box-shadow: 
+    0 3px 10px rgba(255, 168, 51, 0.4),
+    0 0 10px rgba(255, 184, 77, 0.2),
     inset 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
@@ -767,19 +790,20 @@ export default {
 .back-btn {
   width: 100%;
   padding: 0.8rem;
-  border: 2px solid #ff8c42;
+    border: 2px solid #ffa833;
   background: white;
-  color: #ff8c42;
+  color: #ffa833;
   border-radius: 10px;
   font-size: 1rem;
   font-weight: bold;
   cursor: pointer;
   transition: all 0.3s;
   touch-action: manipulation;
+  font-family: 'Jua', sans-serif;
 }
 
 .back-btn:active {
-  background: #ff8c42;
+  background: #ffa833;
   color: white;
   transform: scale(0.95);
 }
@@ -1208,11 +1232,11 @@ export default {
   width: 32px;
   height: 32px;
   border: none;
-  background: rgba(255, 140, 66, 0.2);
+  background: rgba(255, 168, 51, 0.2);
   border-radius: 50%;
   font-size: 24px;
   font-weight: bold;
-  color: #ff8c42;
+  color: #ffa833;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -1225,14 +1249,14 @@ export default {
 }
 
 .close-btn:hover {
-  background: rgba(255, 140, 66, 0.4);
+  background: rgba(255, 168, 51, 0.4);
   transform: scale(1.1);
-  color: #ff6b35;
+  color: #ffa833;
 }
 
 .close-btn:active {
   transform: scale(0.95);
-  background: rgba(255, 140, 66, 0.6);
+  background: rgba(255, 168, 51, 0.6);
 }
 
 .fortune-cookie.opened .fortune-paper {
@@ -1269,7 +1293,7 @@ export default {
 .default-header-text {
   font-size: 1.1rem;
   font-weight: bold;
-  color: #ff8c42;
+  color: #ffa833;
   margin: 0;
   line-height: 1.6;
 }
@@ -1287,7 +1311,7 @@ export default {
 .lucky-header-text {
   font-size: 1.1rem;
   font-weight: bold;
-  color: #ff6b35;
+  color: #ffa833;
   margin: 0;
   line-height: 1.6;
 }
@@ -1295,11 +1319,11 @@ export default {
 @keyframes luckyPulse {
   0%, 100% {
     transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(255, 140, 66, 0.7);
+    box-shadow: 0 0 0 0 rgba(255, 168, 51, 0.7);
   }
   50% {
     transform: scale(1.02);
-    box-shadow: 0 0 0 10px rgba(255, 140, 66, 0);
+    box-shadow: 0 0 0 10px rgba(255, 168, 51, 0);
   }
 }
 
@@ -1347,19 +1371,20 @@ export default {
 .reset-btn {
   margin-top: 1.5rem;
   padding: 0.8rem 2rem;
-  border: 2px solid #ff8c42;
+    border: 2px solid #ffa833;
   background: white;
-  color: #ff8c42;
+  color: #ffa833;
   border-radius: 25px;
   font-size: 1rem;
   font-weight: bold;
   cursor: pointer;
   transition: all 0.3s;
   touch-action: manipulation;
+  font-family: 'Jua', sans-serif;
 }
 
 .reset-btn:active {
-  background: #ff8c42;
+  background: #ffa833;
   color: white;
   transform: scale(0.95);
 }
@@ -1373,7 +1398,7 @@ export default {
 
 .loading {
   background: rgba(255, 255, 255, 0.9);
-  color: #ff8c42;
+  color: #ffa833;
 }
 
 .error {
@@ -1384,11 +1409,20 @@ export default {
 /* 모바일 반응형 */
 @media (max-width: 600px) {
   .header-title {
-    font-size: 1.2rem;
+    font-size: 1rem;
+    line-height: 1.4;
+    padding: 0 15px;
+    word-break: keep-all;
   }
 
   .subtitle {
-    font-size: 1.6rem;
+    font-size: 1.4rem;
+    margin-top: 0.3rem;
+    padding: 0.8rem 1.2rem;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   .header-message {
@@ -1433,11 +1467,20 @@ export default {
 
 @media (max-width: 400px) {
   .header-title {
-    font-size: 1rem;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    padding: 0 10px;
+    word-break: keep-all;
   }
 
   .subtitle {
-    font-size: 1.4rem;
+    font-size: 1.1rem;
+    margin-top: 0.3rem;
+    padding: 0.6rem 1rem;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   .plate {

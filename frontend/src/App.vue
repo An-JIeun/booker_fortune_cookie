@@ -19,7 +19,7 @@ export default {
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  background: linear-gradient(135deg, #ff8c42 0%, #ff6b35 50%, #f7931e 100%);
+  background: #ffa833;
   min-height: 100vh;
   overflow-x: hidden;
 }
@@ -32,4 +32,3 @@ body {
   padding: 20px;
 }
 </style>
-
