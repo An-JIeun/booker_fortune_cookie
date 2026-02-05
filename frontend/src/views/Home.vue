@@ -1506,19 +1506,19 @@ export default {
 /* 모바일 반응형 */
 @media (max-width: 600px) {
   .header-title {
-    font-size: 1rem;
+    font-size: 1.3rem;
     line-height: 1.4;
     padding: 0 15px;
     word-break: keep-all;
   }
 
   .subtitle {
-    font-size: 1.4rem;
+    font-size: clamp(1.3rem, 4vw, 1.8rem);
     margin-top: 0.3rem;
     padding: 0.8rem 1.2rem;
-    letter-spacing: 0.03em;
+    letter-spacing: 0.02em;
     white-space: nowrap;
-    max-width: 100%;
+    max-width: calc(100% - 30px);
     box-sizing: border-box;
   }
 
@@ -1569,7 +1569,7 @@ export default {
 
 @media (max-width: 400px) {
   .header-title {
-    font-size: 0.9rem;
+    font-size: 1.1rem;
     line-height: 1.4;
     padding: 0 10px;
     word-break: keep-all;
@@ -1581,7 +1581,7 @@ export default {
   }
 
   .subtitle {
-    font-size: 1.1rem;
+    font-size: clamp(1.1rem, 5vw, 1.5rem);
     margin-top: 0.3rem;
     padding: 0.6rem 1rem;
     letter-spacing: 0.02em;
