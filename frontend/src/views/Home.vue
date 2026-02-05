@@ -46,6 +46,11 @@
       >
         나도 쿠키 만들기
       </button>
+
+      <!-- 현재까지 구운 쿠키 개수 -->
+      <div class="cookie-count-text" :class="{ 'show': showButton }">
+        현재까지 구운 쿠키 : {{ displayedCount }}개
+      </div>
     </div>
 
     <!-- 메시지 입력 섹션 -->
@@ -165,6 +170,7 @@ export default {
       showMessage: false,
       showButton: false,
       cookieBasket: [],
+      displayedCount: 0,
       newYearMessage: '',
       bookRecommendation: '',
       isBaking: false,
@@ -182,10 +188,10 @@ export default {
       isShaking: false,
       createdMessageId: null, // 방금 생성한 메시지 ID (자기 자신이 작성한 메시지 제외용)
       isLuckyMessage: false, // 모든 쿠키를 읽었을 때 나오는 럭키 메시지 여부
+      countInterval: null, // 카운트 애니메이션 interval 저장
     }
   },
   mounted() {
-    this.loadCookieCount()
     // 헤더 애니메이션 시작
     setTimeout(() => {
       this.showHeader = true
@@ -193,6 +199,10 @@ export default {
         this.showMessage = true
         setTimeout(() => {
           this.showButton = true
+          // 버튼이 나타난 후에 카운트 로드 및 애니메이션 시작
+          setTimeout(() => {
+            this.loadCookieCount()
+          }, 500)
         }, 500)
       }, 500)
     }, 500)
@@ -250,10 +260,84 @@ export default {
         } else {
           this.cookieBasket = []
         }
+        
+        // 숫자 카운트업 애니메이션
+        this.animateCount(count)
       } catch (err) {
         console.error('쿠키 개수 로드 실패:', err)
+        // 에러 발생 시 0개로 처리
         this.cookieBasket = []
+        this.displayedCount = 0
+        // 애니메이션은 실행하지 않고 바로 0으로 표시
       }
+    },
+    animateCount(targetCount) {
+      // 기존 interval 정리
+      if (this.countInterval) {
+        clearInterval(this.countInterval)
+        this.countInterval = null
+      }
+      
+      // 먼저 0으로 리셋
+      this.displayedCount = 0
+      
+      // 버튼 애니메이션이 완전히 끝난 후 카운트 애니메이션 시작
+      // 버튼은 0.8초 transition이므로 그 이후에 시작
+      setTimeout(() => {
+        if (targetCount <= 10) {
+          // 10 이하: 0→9까지 세고, 다시 0부터 targetCount까지
+          let currentNum = 0
+          let phase = 1 // 1: 0→9, 2: 0→targetCount
+          
+          const animate = () => {
+            if (phase === 1) {
+              // 0부터 9까지 세기
+              currentNum++
+              this.displayedCount = currentNum
+              
+              if (currentNum >= 9) {
+                phase = 2
+                currentNum = 0
+                setTimeout(animate, 200) // 0.2초 대기 후 다음 단계
+              } else {
+                this.countInterval = setTimeout(animate, 200) // 0.2초마다 숫자 변경
+              }
+            } else {
+              // 0부터 targetCount까지 세기
+              currentNum++
+              this.displayedCount = currentNum
+              
+              if (currentNum >= targetCount) {
+                this.countInterval = null
+                this.displayedCount = targetCount
+              } else {
+                this.countInterval = setTimeout(animate, 200) // 0.2초마다 숫자 변경
+              }
+            }
+          }
+          
+          this.countInterval = setTimeout(animate, 200)
+        } else {
+          // 10 이상: 0부터 targetCount까지 바로 세기
+          let currentNum = 0
+          
+          const animate = () => {
+            currentNum++
+            this.displayedCount = currentNum
+            
+            if (currentNum >= targetCount) {
+              this.countInterval = null
+              this.displayedCount = targetCount
+            } else {
+              // 숫자가 클수록 더 빠르게 (최대 0.05초)
+              const delay = Math.max(50, 200 - (currentNum * 2))
+              this.countInterval = setTimeout(animate, delay)
+            }
+          }
+          
+          this.countInterval = setTimeout(animate, 100)
+        }
+      }, 1000) // 1초 후 시작 (버튼 애니메이션 완료 후)
     },
     goToInput() {
       this.currentStep = 'input'
@@ -442,6 +526,23 @@ export default {
   align-items: center;
   justify-content: center;
   overflow: visible;
+}
+
+.cookie-count-text {
+  color: white;
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  margin-top: 1.5rem;
+  font-family: 'Jua', sans-serif;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.cookie-count-text.show {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .plate {
@@ -1425,6 +1526,11 @@ export default {
     box-sizing: border-box;
   }
 
+  .cookie-count-text {
+    font-size: 1rem;
+    margin-top: 1.2rem;
+  }
+
   .header-message {
     font-size: 0.9rem;
     margin: 1rem auto 1.5rem;
@@ -1471,6 +1577,11 @@ export default {
     line-height: 1.4;
     padding: 0 10px;
     word-break: keep-all;
+  }
+
+  .cookie-count-text {
+    font-size: 0.9rem;
+    margin-top: 1rem;
   }
 
   .subtitle {
