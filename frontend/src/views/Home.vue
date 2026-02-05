@@ -198,11 +198,12 @@ export default {
       setTimeout(() => {
         this.showMessage = true
         setTimeout(() => {
-          this.showButton = true
-          // 버튼이 나타난 후에 카운트 로드 및 애니메이션 시작
+          // 버튼이 나타나기 직전에 카운트 로드 및 애니메이션 시작
+          this.loadCookieCount()
+          // 그 직후 버튼 표시
           setTimeout(() => {
-            this.loadCookieCount()
-          }, 500)
+            this.showButton = true
+          }, 100)
         }, 500)
       }, 500)
     }, 500)
@@ -281,47 +282,27 @@ export default {
       // 먼저 0으로 리셋
       this.displayedCount = 0
       
-      // 버튼 애니메이션이 완전히 끝난 후 카운트 애니메이션 시작
-      // 버튼은 0.8초 transition이므로 그 이후에 시작
-      setTimeout(() => {
-        if (targetCount <= 10) {
-          // 10 이하: 0→9까지 세고, 다시 0부터 targetCount까지
-          let currentNum = 0
-          let phase = 1 // 1: 0→9, 2: 0→targetCount
-          
-          const animate = () => {
-            if (phase === 1) {
-              // 0부터 9까지 세기
-              currentNum++
-              this.displayedCount = currentNum
-              
-              if (currentNum >= 9) {
-                phase = 2
-                currentNum = 0
-                setTimeout(animate, 200) // 0.2초 대기 후 다음 단계
-              } else {
-                this.countInterval = setTimeout(animate, 200) // 0.2초마다 숫자 변경
-              }
+      // 바로 애니메이션 시작
+      if (targetCount <= 10) {
+        // 10 이하: 0→9까지 세고, 다시 0부터 targetCount까지
+        let currentNum = 0
+        let phase = 1 // 1: 0→9, 2: 0→targetCount
+        
+        const animate = () => {
+          if (phase === 1) {
+            // 0부터 9까지 세기
+            currentNum++
+            this.displayedCount = currentNum
+            
+            if (currentNum >= 9) {
+              phase = 2
+              currentNum = 0
+              this.countInterval = setTimeout(animate, 50) // 0.05초 대기 후 다음 단계
             } else {
-              // 0부터 targetCount까지 세기
-              currentNum++
-              this.displayedCount = currentNum
-              
-              if (currentNum >= targetCount) {
-                this.countInterval = null
-                this.displayedCount = targetCount
-              } else {
-                this.countInterval = setTimeout(animate, 200) // 0.2초마다 숫자 변경
-              }
+              this.countInterval = setTimeout(animate, 50) // 0.05초마다 숫자 변경
             }
-          }
-          
-          this.countInterval = setTimeout(animate, 200)
-        } else {
-          // 10 이상: 0부터 targetCount까지 바로 세기
-          let currentNum = 0
-          
-          const animate = () => {
+          } else {
+            // 0부터 targetCount까지 세기
             currentNum++
             this.displayedCount = currentNum
             
@@ -329,15 +310,30 @@ export default {
               this.countInterval = null
               this.displayedCount = targetCount
             } else {
-              // 숫자가 클수록 더 빠르게 (최대 0.05초)
-              const delay = Math.max(50, 200 - (currentNum * 2))
-              this.countInterval = setTimeout(animate, delay)
+              this.countInterval = setTimeout(animate, 50) // 0.05초마다 숫자 변경
             }
           }
-          
-          this.countInterval = setTimeout(animate, 100)
         }
-      }, 1000) // 1초 후 시작 (버튼 애니메이션 완료 후)
+        
+        this.countInterval = setTimeout(animate, 50)
+      } else {
+        // 10 이상: 0부터 targetCount까지 바로 세기
+        let currentNum = 0
+        
+        const animate = () => {
+          currentNum++
+          this.displayedCount = currentNum
+          
+          if (currentNum >= targetCount) {
+            this.countInterval = null
+            this.displayedCount = targetCount
+          } else {
+            this.countInterval = setTimeout(animate, 50) // 0.05초마다 숫자 변경
+          }
+        }
+        
+        this.countInterval = setTimeout(animate, 50)
+      }
     },
     goToInput() {
       this.currentStep = 'input'
