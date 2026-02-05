@@ -57,7 +57,17 @@ npm run dev
 
 ## Render 배포
 
-1. Render 대시보드에서 새 Web Service 생성
+### 1. PostgreSQL 데이터베이스 생성 (중요!)
+
+**데이터 유지에 필수입니다!** SQLite는 Render 재배포 시 데이터가 사라집니다.
+
+1. Render 대시보드 → **New** → **PostgreSQL**
+2. 데이터베이스 이름 지정 (예: `fortune-cookie-db`)
+3. 생성 후 **Internal Database URL** 복사 (예: `postgresql://user:password@host:5432/dbname`)
+
+### 2. Web Service 생성
+
+1. Render 대시보드에서 새 **Web Service** 생성
 2. GitHub 저장소 연결 (자동 배포 활성화)
 3. 다음 설정을 적용:
    - **Environment**: Python 3
@@ -69,9 +79,16 @@ npm run dev
    **중요 사항**:
    - Root Directory를 `backend`로 설정하면 Build Command와 Start Command에서 `cd backend`를 제거할 수 있습니다.
    - Python 3.11 또는 3.13 모두 지원합니다. 최신 패키지 버전으로 Python 3.13 호환성 문제가 해결되었습니다.
-4. 환경 변수 설정:
-   - `DATABASE_URL`: PostgreSQL 데이터베이스 URL (Render에서 자동 생성 가능)
-   - `ENVIRONMENT`: `production` (선택사항)
+
+### 3. 환경 변수 설정 (필수!)
+
+Web Service의 **Environment** 섹션에서 다음 환경 변수를 설정:
+
+- **`DATABASE_URL`**: 위에서 복사한 PostgreSQL Internal Database URL
+  - 예: `postgresql://user:password@host:5432/dbname`
+  - ⚠️ **이 설정이 없으면 SQLite를 사용하며, 재배포 시 데이터가 사라집니다!**
+  
+- **`ENVIRONMENT`**: `production` (선택사항, 프로덕션 모드 활성화)
 
 **참고**: `uvicorn[standard]` 대신 `uvicorn`만 사용하여 maturin 빌드 오류를 방지했습니다.
 

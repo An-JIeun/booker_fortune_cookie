@@ -6,9 +6,13 @@ import os
 
 # 데이터베이스 테이블 생성
 # 개발 환경에서만 기존 테이블 삭제 후 재생성
-# 프로덕션에서는 마이그레이션 도구(Alembic 등) 사용 권장
-if os.getenv("ENVIRONMENT", "development") == "development":
+# 프로덕션에서는 기존 테이블을 유지하고 없으면 생성
+environment = os.getenv("ENVIRONMENT", "development")
+if environment == "development":
     Base.metadata.drop_all(bind=engine)
+    print("[DEBUG] 개발 환경: 기존 테이블 삭제 후 재생성")
+else:
+    print("[DEBUG] 프로덕션 환경: 기존 테이블 유지, 없으면 생성")
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Fortune Cookie API", version="1.0.0")
