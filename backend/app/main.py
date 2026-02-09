@@ -5,9 +5,9 @@ from app.api.routes import router
 import os
 
 # 데이터베이스 테이블 생성
-# 개발 환경에서만 기존 테이블 삭제 후 재생성
-# 프로덕션에서는 기존 테이블을 유지하고 없으면 생성
-environment = os.getenv("ENVIRONMENT", "development")
+# 기본값을 production으로 해서, ENVIRONMENT 미설정 시에도 테이블을 절대 삭제하지 않음
+# (Render 등에서 ENVIRONMENT를 안 넣으면 기존엔 development로 동작해 매 재시작마다 drop_all 되었음)
+environment = os.getenv("ENVIRONMENT", "production")
 if environment == "development":
     Base.metadata.drop_all(bind=engine)
     print("[DEBUG] 개발 환경: 기존 테이블 삭제 후 재생성")
